@@ -12,4 +12,9 @@ hero:
     - theme: alt
       text: View on GitHub
       link: https://github.com/vuejs/vitepress
+
+features:
+- icon: 🛠️
+  title: Simple and minimal, always
+  details: Lorem ipsum...
 ---
