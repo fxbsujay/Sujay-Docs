@@ -7,7 +7,7 @@ export default defineConfig({
     description: 'Sujay Blog.',
     lang: 'en-US',
     markdown: {
-        theme: 'github-dark',
+        theme: 'dark-plus',
         lineNumbers: false
     },
     cleanUrls: true,
@@ -39,7 +39,7 @@ export default defineConfig({
             { icon: 'github', link: 'https://github.com/fxbsujay' }
         ],
         nav: [
-            { text: '博客', link: '/blog/blog' },
+            { text: '博客', link: '/blog/hexo' },
         ],
         sidebar: {
             '/blog': [
@@ -47,8 +47,9 @@ export default defineConfig({
                     text: 'Java',
                     collapsed: false,
                     items: [
-                        { text: '快速建立一个自己的博客', link: '/blog/blog' },
-                        { text: '快速开始', link: '/blog/mymap' }
+                        { text: '使用 Hexo 搭建一个博客', link: '/blog/hexo' },
+                        { text: 'Netty源码分析', link: '/blog/netty' },
+                        { text: '示例', link: '/blog/elk' }
                     ]
                 }
             ]
