@@ -1,0 +1,1 @@
+import{_ as s,c as e,o as n,O as o}from"./chunks/framework.0d343703.js";const y=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"blog/elk.md","lastUpdated":null}'),t={name:"blog/elk.md"},a=o("",7),l=[a];function i(p,c,r,d,u,m){return n(),e("div",null,l)}const E=s(t,[["render",i]]);export{y as __pageData,E as default};

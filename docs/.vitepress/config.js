@@ -1,27 +1,38 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig,MarkdownOptions  } from 'vitepress'
 
 
 export default defineConfig({
     title: 'Sujay',
     titleTemplate: ':title - Sujay',
     description: 'Sujay Blog.',
-    lang: 'cn-ZH',
+    lang: 'en-US',
     markdown: {
-        theme: 'material-theme-palenight',
-        lineNumbers: true
+        theme: 'github-dark',
+        lineNumbers: false
     },
     cleanUrls: true,
     base: '/',
     ignoreDeadLinks: true,
-    srcDir: './src',
+    lastUpdated: true,
     head: [
-        ['link', { rel: 'icon', href: '/favicon.ico' }]
+        [ 'link', { rel: 'icon', href: '/favicon.ico' }]
     ],
     themeConfig: {
         logo: '/favicon.ico',
-        siteTitle: 'Delightful-CSS',
+        siteTitle: 'Fan Xuebin',
         outline: 3,
+        editLink: {
+            pattern: 'https://github.com/fxbsujay/Sujay-Docs/blob/main/docs/:path',
+            text: '在 GitHub 上编辑此页面'
+        },
+        docFooter: {
+            prev: '上一页',
+            next: '下一页'
+        },
+        outlineTitle: '在本页',
+        lastUpdatedText: '最近更新时间',
         footer: {
+            message: 'Released under the <a href="https://github.com/fxbsujay/Sujay-Docs/blob/main/LICENSE">MIT License</a>.',
             copyright: 'Copyright © 2020-present <a href="https://github.com/fxbsujay">Fan XueBin</a>'
         },
         socialLinks: [
@@ -33,12 +44,13 @@ export default defineConfig({
         sidebar: {
             '/blog': [
                 {
-                    text: 'Aa',
+                    text: 'Java',
+                    collapsed: false,
                     items: [
-                        { text: '组件库介绍', link: '/blog/blog' },
-                        { text: '快速开始', link: '/blog/elk' }
+                        { text: '快速建立一个自己的博客', link: '/blog/blog' },
+                        { text: '快速开始', link: '/blog/mymap' }
                     ]
-                },
+                }
             ]
         }
     }
