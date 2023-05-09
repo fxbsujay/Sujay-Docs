@@ -1,6 +1,3 @@
----
-outline: deep
----
 # 使用 Hexo 搭建一个博客
 
 ## 安装Node.js

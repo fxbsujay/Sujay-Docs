@@ -20,7 +20,7 @@ export default defineConfig({
     themeConfig: {
         logo: '/favicon.ico',
         siteTitle: 'Fan Xuebin',
-        outline: 3,
+        outline: 'deep',
         editLink: {
             pattern: 'https://github.com/fxbsujay/Sujay-Docs/blob/main/docs/:path',
             text: '在 GitHub 上编辑此页面'
@@ -47,9 +47,18 @@ export default defineConfig({
                     text: 'Java',
                     collapsed: false,
                     items: [
+                        { text: 'JDK17 新特性', link: '/blog/jdk_support' },
+                        { text: 'MySql 索引', link: '/blog/mysql_index' },
+                        { text: 'Netty 源码分析', link: '/blog/netty' },
+                        { text: 'ELK', link: '/blog/elk' },
+                    ]
+                },
+                {
+                    text: '生活小工具',
+                    collapsed: false,
+                    items: [
                         { text: '使用 Hexo 搭建一个博客', link: '/blog/hexo' },
-                        { text: 'Netty源码分析', link: '/blog/netty' },
-                        { text: '示例', link: '/blog/elk' }
+                        { text: '示例', link: '/blog/text' }
                     ]
                 }
             ]
