@@ -1,4 +1,4 @@
-# Elasticsearch、Logstash、Kibana
+# ELK 学习文档
 
 
 ## Elasticsearch
@@ -35,7 +35,7 @@ Google，百度类的网站搜索，它们都是根据网页中的关键字生�
 - 阿里：使用 Elasticsearch 构建日志采集和分析体系
 - Stack Overflow：解决 Bug 问题的网站，全英文，编程人员交流的网站
 
-## Elasticsearch 基本使用
+### Elasticsearch 基本使用
 
 Windows 版的 Elasticsearch 压缩包，解压即安装完毕，解压后的目录结构如下
 
@@ -79,9 +79,9 @@ Windows 版的 Elasticsearch 压缩包，解压即安装完毕，解压后的目
 
 Elasticsearch 是**面向文档型数据库**，一条数据在这里就是一个文档。 为了方便大家理解，我们将 Elasticsearch 里存储文档数据和关系型数据库 MySQL 存储数据的概念进行一个类比
 
-![image.png](/image/blog/image2.png)<br />ES 里的 Index 可以看做一个库，而 Types 相当于表， Documents 则相当于表的行。这里 Types 的概念已经被逐渐弱化， Elasticsearch 6.X 中，一个 index 下已经只能包含一个type， Elasticsearch 7.X 中, Type 的概念已经被删除了。
+![image.png](/doc/elk/img-1.png)<br />ES 里的 Index 可以看做一个库，而 Types 相当于表， Documents 则相当于表的行。这里 Types 的概念已经被逐渐弱化， Elasticsearch 6.X 中，一个 index 下已经只能包含一个type， Elasticsearch 7.X 中, Type 的概念已经被删除了。
 
-## 索引-创建
+#### 索引-创建
 对比关系型数据库，创建索引就等同于创建数据库。<br />在 Postman 中，向 ES 服务器发 PUT 请求 ：** http://127.0.0.1:9200/shopping**<br />请求后，服务器返回响应：
 ```java
 {
@@ -91,42 +91,43 @@ Elasticsearch 是**面向文档型数据库**，一条数据在这里就是一�
 }
 
 ```
-## 索引-查询 & 删除
-### 查看所有索引
-在 Postman 中，向 ES 服务器发 GET 请求 ： [http://127.0.0.1:9200/_cat/indices?v](http://127.0.0.1:9200/_cat/indices?v)
+#### 索引-查询 & 删除
+
+查看所有索引，在 Postman 中，向 ES 服务器发 GET 请求 ： [http://127.0.0.1:9200/_cat/indices?v](http://127.0.0.1:9200/_cat/indices?v)
 
 这里请求路径中的_cat 表示查看的意思， indices 表示索引，所以整体含义就是查看当前 ES服务器中的所有索引，就好像 MySQL 中的 show tables 的感觉，服务器响应结果如下 :
-```java
+```
 health status index    uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 yellow open   shopping J0WlEhh4R7aDrfIc3AkwWQ   1   1          0            0       208b           208b
 ```
-![image.png](/image/blog/image%20(1).png)
 
-### 查看单个索引
+![image.png](/doc/elk/img-2.png)
+
+#### 查看单个索引
  GET 请求 ： http://127.0.0.1:9200/shopping<br />返回结果如下：
 
-```java
+```json
 {
-    "shopping": {//索引名
-        "aliases": {},//别名
-        "mappings": {},//映射
-        "settings": {//设置
-            "index": {//设置 - 索引
-                "creation_date": "1617861426847",//设置 - 索引 - 创建时间
-                "number_of_shards": "1",//设置 - 索引 - 主分片数量
-                "number_of_replicas": "1",//设置 - 索引 - 主分片数量
-                "uuid": "J0WlEhh4R7aDrfIc3AkwWQ",//设置 - 索引 - 主分片数量
-                "version": {//设置 - 索引 - 主分片数量
+    "shopping": { // 索引名
+        "aliases": {}, // 别名
+        "mappings": {}, // 映射
+        "settings": { // 设置
+            "index": { // 设置 - 索引
+                "creation_date": "1617861426847", // 设置 - 索引 - 创建时间
+                "number_of_shards": "1", // 设置 - 索引 - 主分片数量
+                "number_of_replicas": "1", // 设置 - 索引 - 主分片数量
+                "uuid": "J0WlEhh4R7aDrfIc3AkwWQ", // 设置 - 索引 - 主分片数量
+                "version": { // 设置 - 索引 - 主分片数量
                     "created": "7080099"
                 },
-                "provided_name": "shopping"//设置 - 索引 - 主分片数量
+                "provided_name": "shopping" // 设置 - 索引 - 主分片数量
             }
         }
     }
 }
 
 ```
-### 删除索引
+#### 删除索引
 DELETE 请求 ： http://127.0.0.1:9200/shopping<br />返回结果如下：
 ```java
 {
@@ -134,25 +135,25 @@ DELETE 请求 ： http://127.0.0.1:9200/shopping<br />返回结果如下：
 }
 
 ```
-再次查看所有索引，GET http://127.0.0.1:9200/_cat/indices?v，返回结果如下：
+再次查看所有索引，GET http://127.0.0.1:9200/_cat/indices?v <br />返回结果如下：
 ```java
 health status index uuid pri rep docs.count docs.deleted store.size pri.store.size
 ```
-成功删除。
+成功删除
 
-## 文档-创建（Put & Post）
-POST 请求 ： http://127.0.0.1:9200/shopping/_doc，请求体JSON内容为：
-```java
+#### 文档-创建（Put & Post）
+POST 请求 ： http://127.0.0.1:9200/shopping/_doc <br />请求体JSON内容为：
+```json
 {
-    "title":"小米手机",
-    "category":"小米",
-    "images":"http://www.gulixueyuan.com/xm.jpg",
-    "price":3999.00
+    "title": "小米手机",
+    "category": "小米",
+    "images": "http://www.gulixueyuan.com/xm.jpg",
+    "price": 3999.00
 }
 
 ```
 注意，此处发送请求的方式必须为 POST，不能是 PUT，否则会发生错误 。<br />返回结果：
-```java
+```json
 {
     "_index": "shopping",//索引
     "_type": "_doc",//类型-文档
@@ -169,8 +170,9 @@ POST 请求 ： http://127.0.0.1:9200/shopping/_doc，请求体JSON内容为：
 }
 
 ```
-上面的数据创建后，由于没有指定数据唯一性标识（ID），默认情况下， ES 服务器会随机生成一个。<br />如果想要自定义唯一性标识，需要在创建时指定： http://127.0.0.1:9200/shopping/_doc/1，请求体JSON内容为：
-```java
+上面的数据创建后，由于没有指定数据唯一性标识（ID），默认情况下， ES 服务器会随机生成一个。如果想要自定义唯一性标识，需要在创建时指定<br/>
+POST 请求 ：http://127.0.0.1:9200/shopping/_doc/1 <br/>请求体JSON内容为：
+```json
 {
     "title":"小米手机",
     "category":"小米",
@@ -178,8 +180,11 @@ POST 请求 ： http://127.0.0.1:9200/shopping/_doc，请求体JSON内容为：
     "price":3999.00
 }
 ```
-返回结果如下：**此处需要注意：如果增加数据时明确数据主键，那么请求方式也可以为 PUT。**
-```java
+:::warning 注意
+如果增加数据时明确数据主键，那么请求方式也可以为 PUT。
+:::
+返回结果如下：
+```json
 {
     "_index": "shopping",
     "_type": "_doc",
@@ -195,9 +200,9 @@ POST 请求 ： http://127.0.0.1:9200/shopping/_doc，请求体JSON内容为：
     "_primary_term": 1
 }
 ```
-## 查询-主键查询 & 全查询
+#### 查询-主键查询 & 全查询
 GET 请求 ： http://127.0.0.1:9200/shopping/_doc/1 <br />返回结果如下：
-```java
+```json
 {
     "_index": "shopping",
     "_type": "_doc",
@@ -215,7 +220,7 @@ GET 请求 ： http://127.0.0.1:9200/shopping/_doc/1 <br />返回结果如下：
 }
 ```
 查找不存在的内容，向 ES 服务器发 GET 请求 ： http://127.0.0.1:9200/shopping/_doc/1001<br />返回结果如下：
-```java
+```json
 {
     "_index": "shopping",
     "_type": "_doc",
@@ -224,7 +229,7 @@ GET 请求 ： http://127.0.0.1:9200/shopping/_doc/1 <br />返回结果如下：
 }
 ```
 查看索引下所有数据，向 ES 服务器发 GET 请求 ： http://127.0.0.1:9200/shopping/_search<br />返回结果如下：
-```java
+```json
 {
     "took": 133,
     "timed_out": false,
@@ -270,10 +275,9 @@ GET 请求 ： http://127.0.0.1:9200/shopping/_doc/1 <br />返回结果如下：
 }
 
 ```
-## 全量修改 & 局部修改 & 删除
-### 全量修改
+#### 全量修改
 POST 请求 ： http://127.0.0.1:9200/shopping/_doc/1<br />请求体JSON内容为:
-```java
+```json
 {
     "title":"华为手机",
     "category":"华为",
@@ -282,7 +286,7 @@ POST 请求 ： http://127.0.0.1:9200/shopping/_doc/1<br />请求体JSON内容�
 }
 ```
 修改成功后，服务器响应结果：
-```java
+```json
 {
     "_index": "shopping",
     "_type": "_doc",
@@ -298,9 +302,9 @@ POST 请求 ： http://127.0.0.1:9200/shopping/_doc/1<br />请求体JSON内容�
     "_primary_term": 1
 }
 ```
-### 局部修改
+#### 局部修改
 POST 请求 ： http://127.0.0.1:9200/shopping/_update/1<br />请求体JSON内容为:
-```java
+```json
 {
 	"doc": {
 		"title":"小米手机",
@@ -309,7 +313,7 @@ POST 请求 ： http://127.0.0.1:9200/shopping/_update/1<br />请求体JSON内�
 }
 ```
 返回结果如下：
-```java
+```json
 {
     "_index": "shopping",
     "_type": "_doc",
@@ -325,8 +329,8 @@ POST 请求 ： http://127.0.0.1:9200/shopping/_update/1<br />请求体JSON内�
     "_primary_term": 1
 }
 ```
- GET请求 ： http://127.0.0.1:9200/shopping/_doc/1，查看修改内容：
-```java
+ GET请求 ： http://127.0.0.1:9200/shopping/_doc/1 <br/>查看修改内容：
+```json
 {
     "_index": "shopping",
     "_type": "_doc",
@@ -343,9 +347,9 @@ POST 请求 ： http://127.0.0.1:9200/shopping/_update/1<br />请求体JSON内�
     }
 }
 ```
-### 删除
+#### 删除
 DELETE 请求 ： http://127.0.0.1:9200/shopping/_doc/1<br />返回结果：
-```java
+```json
 {
     "_index": "shopping",
     "_type": "_doc",
@@ -361,8 +365,8 @@ DELETE 请求 ： http://127.0.0.1:9200/shopping/_doc/1<br />返回结果：
     "_primary_term": 1
 }
 ```
-向 ES 服务器发 GET请求 ： http://127.0.0.1:9200/shopping/_doc/1，查看是否删除成功：
-```java
+向 ES 服务器发 GET请求 ： http://127.0.0.1:9200/shopping/_doc/1 <br/>查看是否删除成功：
+```json
 {
     "_index": "shopping",
     "_type": "_doc",
@@ -371,11 +375,9 @@ DELETE 请求 ： http://127.0.0.1:9200/shopping/_doc/1<br />返回结果：
 }
 ```
 
-## 条件查询 & 分页查询 & 查询排序
-
-### 条件查询
+#### 条件查询
 GET请求 ： http://127.0.0.1:9200/shopping/_search
-```java
+```json
 {
     "took": 5,
     "timed_out": false,
@@ -471,7 +473,7 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search
 ```
 #### URL带参查询
 GET请求 ： http://127.0.0.1:9200/shopping/_search?q=category:小米<br />返回结果如下：
-```java
+```json
 {
     "took": 94,
     "timed_out": false,
@@ -529,8 +531,8 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search?q=category:小米<br />返�
 }
 ```
 #### 请求体带参查询
-GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+GET请求 ： http://127.0.0.1:9200/shopping/_search <br/>附带JSON体如下：
+```json
 {
 	"query":{
 		"match":{
@@ -540,8 +542,8 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 }
 ```
 #### 带请求体方式的查找所有内容
- GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+ GET请求 ： http://127.0.0.1:9200/shopping/_search <br/>附带JSON体如下：
+```json
 {
 	"query":{
 		"match_all":{}
@@ -549,8 +551,8 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 }
 ```
 #### 查询指定字段
-GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+GET请求 ： http://127.0.0.1:9200/shopping/_search <br/>附带JSON体如下：
+```json
 {
 	"query":{
 		"match_all":{}
@@ -558,9 +560,9 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 	"_source":["title"]
 }
 ```
-### 分页查询
-GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+#### 分页查询
+GET请求 ： http://127.0.0.1:9200/shopping/_search <br/>附带JSON体如下：
+```json
 {
 	"query":{
 		"match_all":{}
@@ -569,9 +571,9 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 	"size":2
 }
 ```
-### 查询排序
-GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+#### 查询排序
+GET请求 ： http://127.0.0.1:9200/shopping/_search <br/>附带JSON体如下：
+```json
 {
 	"query":{
 		"match_all":{}
@@ -584,12 +586,9 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 }
 ```
 
-
-## 多条件查询 & 范围查询
-
-### 多条件查询
-假设想找出小米牌子，价格为3999元的。（must相当于数据库的&&）<br />GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+#### 多条件查询
+假设想找出小米牌子，价格为3999元的。（must相当于数据库的&&）<br />GET请求 ： http://127.0.0.1:9200/shopping/_search <br />附带JSON体如下：
+```json
 {
 	"query":{
 		"bool":{
@@ -606,8 +605,8 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 	}
 }
 ```
-假设想找出小米和华为的牌子。（should相当于数据库的||）<br />GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+假设想找出小米和华为的牌子。（should相当于数据库的||）<br />GET请求 ： http://127.0.0.1:9200/shopping/_search <br />附带JSON体如下：
+```json
 {
 	"query":{
 		"bool":{
@@ -631,9 +630,9 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 	}
 }
 ```
-### 范围查询
-假设想找出小米和华为的牌子，价格大于2000元的手机。<br />GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+#### 范围查询
+假设想找出小米和华为的牌子，价格大于2000元的手机。<br />GET请求 ： http://127.0.0.1:9200/shopping/_search <br />附带JSON体如下：
+```json
 {
 	"query":{
 		"bool":{
@@ -658,12 +657,9 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 }
 ```
 
-
-## 全文检索 & 完全匹配 & 高亮查询
-
-### 全文检索
-这功能像搜索引擎那样，如品牌输入“小华”，返回结果带回品牌有“小米”和华为的。<br />GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+#### 全文检索
+这功能像搜索引擎那样，如品牌输入“小华”，返回结果带回品牌有“小米”和华为的。<br />GET请求 ： http://127.0.0.1:9200/shopping/_search <br/>附带JSON体如下：
+```json
 {
 	"query":{
 		"match":{
@@ -672,9 +668,9 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 	}
 }
 ```
-### 完全匹配
-GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+#### 完全匹配
+GET请求 ： http://127.0.0.1:9200/shopping/_search <br/>附带JSON体如下：
+```json
 {
 	"query":{
 		"match_phrase":{
@@ -683,9 +679,9 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 	}
 }
 ```
-### 高亮查询
-GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+#### 高亮查询
+GET请求 ： http://127.0.0.1:9200/shopping/_search <br/>附带JSON体如下：
+```json
 {
 	"query":{
 		"match_phrase":{
@@ -700,12 +696,12 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 }
 ```
 
-## 聚合查询
+#### 聚合查询
 
 聚合允许使用者对 es 文档进行统计分析，类似与关系型数据库中的 group by，当然还有很多其他的聚合，例如取最大值max、平均值avg等等。
 
-接下来按price字段进行分组：<br />GET请求 ： [http://127.0.0.1:9200/shopping/_search](http://127.0.0.1:9200/shopping/_search)，附带JSON体如下：
-```java
+接下来按price字段进行分组：<br />GET请求 ： [http://127.0.0.1:9200/shopping/_search](http://127.0.0.1:9200/shopping/_search)<br/>附带JSON体如下：
+```json
 {
 	"aggs":{//聚合操作
 		"price_group":{//名称，随意起名
@@ -716,8 +712,8 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 	}
 }
 ```
-上面返回结果会附带原始数据的。若不想要不附带原始数据的结果，在 Postman 中，向 ES 服务器发 GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+上面返回结果会附带原始数据的。若不想要不附带原始数据的结果<br/> ES 服务器发 GET请求 ： http://127.0.0.1:9200/shopping/_search<br/>附带JSON体如下：
+```json
 {
 	"aggs":{
 		"price_group":{
@@ -729,8 +725,8 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
     "size":0
 }
 ```
-若想对所有手机价格求**平均值**。<br />GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
-```java
+若想对所有手机价格求平均值<br />GET请求 ： http://127.0.0.1:9200/shopping/_search<br />附带JSON体如下：
+```json
 {
 	"aggs":{
 		"price_avg":{//名称，随意起名
@@ -742,21 +738,20 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
     "size":0
 }
 ```
-## 映射关系
+#### 映射关系
 有了索引库，等于有了数据库中的 database。
 
 接下来就需要建索引库(index)中的映射了，类似于数据库(database)中的表结构(table)。
 
-创建数据库表需要设置字段名称，类型，长度，约束等；索引库也一样，需要知道这个类型下有哪些字段，每个字段有哪些约束信息，这就叫做映射(mapping)。
+创建数据库表需要设置字段名称，类型，长度，约束等；索引库也一样，需要知道这个类型下有哪些字段，每个字段有哪些约束信息，这就叫做映射(mapping)
 
 先创建一个索引：
-```java
+```
 # PUT http://127.0.0.1:9200/user
 ```
-**创建映射**
-```java
-# PUT http://127.0.0.1:9200/user/_mapping
-
+创建映射
+```json
+//  PUT http://127.0.0.1:9200/user/_mapping
 {
     "properties": {
         "name": {
@@ -774,12 +769,12 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
     }
 }
 ```
-**查询映射**
-```java
+查询映射
+```
 #GET http://127.0.0.1:9200/user/_mapping
 ```
 返回结果如下：
-```java
+```json
 {
     "user": {
         "mappings": {
@@ -800,8 +795,8 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 }
 ```
 增加数据
-```java
-#PUT http://127.0.0.1:9200/user/_create/1001
+```json
+// PUT http://127.0.0.1:9200/user/_create/1001
 {
 	"name":"小米",
 	"sex":"男的",
@@ -809,8 +804,8 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 }
 ```
 查找name含有”小“数据：
-```java
-#GET http://127.0.0.1:9200/user/_search
+```json
+// GET http://127.0.0.1:9200/user/_search
 {
 	"query":{
 		"match":{
@@ -821,9 +816,9 @@ GET请求 ： http://127.0.0.1:9200/shopping/_search，附带JSON体如下：
 ```
 
 
-## JavaAPI
+### JavaAPI
 添加依赖：
-```java
+```xml
 <dependencies>
     <dependency>
         <groupId>org.elasticsearch</groupId>
@@ -874,7 +869,7 @@ public class HelloElasticsearch {
 		// 创建客户端对象
 		RestHighLevelClient client = new RestHighLevelClient(
 				RestClient.builder(new HttpHost("localhost", 9200, "http")));
-//		...
+        //		...
 		System.out.println(client);
 
 		// 关闭客户端连接
@@ -882,7 +877,7 @@ public class HelloElasticsearch {
 	}
 }
 ```
-### JavaAPI-索引-创建
+#### 索引-创建
 ```java
 public class CreateIndex {
 
@@ -906,8 +901,8 @@ public class CreateIndex {
 
 }
 ```
-### JavaAPI-索引-查询 & 删除
-#### 查询
+#### 索引-查询 & 删除
+查询
 ```java
 public class SearchIndex {
     public static void main(String[] args) throws IOException {
@@ -929,7 +924,7 @@ public class SearchIndex {
     }
 }
 ```
-#### 删除
+删除
 ```java
 public class DeleteIndex {
     public static void main(String[] args) throws IOException {
@@ -945,8 +940,8 @@ public class DeleteIndex {
     }
 }
 ```
-### JavaAPI-文档-新增 & 修改
-#### 重构
+#### 文档-新增 & 修改
+重构
 上文由于频繁使用以下连接Elasticsearch和关闭它的代码，于是**个人**对它进行重构。
 ```java
 public class SomeClass {
@@ -999,7 +994,7 @@ public class SomeClass {
     }
 }
 ```
-#### 新增
+新增
 ```java
 public class InsertDoc {
 
@@ -1030,7 +1025,7 @@ public class InsertDoc {
     }
 }
 ```
-#### 修改
+修改
 ```java
 public class UpdateDoc {
 
@@ -1052,8 +1047,8 @@ public class UpdateDoc {
 
 }
 ```
-### JavaAPI-文档-查询 & 删除
-#### 查询
+#### 文档-查询 & 删除
+查询
 
 ```java
 public class GetDoc {
@@ -1073,7 +1068,7 @@ public class GetDoc {
     }
 }
 ```
-#### 删除
+删除
 ```java
 public class DeleteDoc {
     public static void main(String[] args) {
@@ -1088,8 +1083,8 @@ public class DeleteDoc {
     }
 }
 ```
-### JavaAPI-文档-批量新增 & 批量删除
-#### 批量新增
+#### 文档-批量新增 & 批量删除
+批量新增
 ```java
 public class BatchInsertDoc {
 
@@ -1115,7 +1110,7 @@ public class BatchInsertDoc {
     }
 }
 ```
-#### 批量删除
+批量删除
 ```java
 public class BatchDeleteDoc {
     public static void main(String[] args) {
@@ -1134,7 +1129,8 @@ public class BatchDeleteDoc {
     }
 }
 ```
-### JavaAPI-文档-高级查询-全量查询
+#### 文档-高级查询
+全量查询
 ```java
 public class BatchInsertDoc {
 
@@ -1157,7 +1153,7 @@ public class BatchInsertDoc {
     }
 }
 ```
-**查询所有索引数据**
+查询所有索引数据
 ```java
 public class QueryDoc {
 
@@ -1189,8 +1185,7 @@ public class QueryDoc {
 
 }
 ```
-### JavaAPI-文档-高级查询-分页查询 & 条件查询 & 查询排序
-#### 条件查询
+条件查询
 ```java
 public class QueryDoc {
     
@@ -1222,7 +1217,7 @@ public class QueryDoc {
     }
 }
 ```
-#### 分页查询
+ 分页查询
 ```java
 public class QueryDoc {
     
@@ -1261,7 +1256,7 @@ public class QueryDoc {
 
 }
 ```
-#### 查询排序
+查询排序
 ```java
 public class QueryDoc {
     
@@ -1297,8 +1292,7 @@ public class QueryDoc {
 
 }
 ```
-### JavaAPI-文档-高级查询-组合查询 & 范围查询
-#### 组合查询
+组合查询
 ```java
 public class QueryDoc {
     
@@ -1338,7 +1332,7 @@ public class QueryDoc {
     }
 }
 ```
-#### 范围查询
+范围查询
 ```java
 public class QueryDoc {
     
@@ -1376,8 +1370,7 @@ public class QueryDoc {
 
 }
 ```
-### JavaAPI-文档-高级查询-模糊查询 & 高亮查询
-#### 模糊查询
+模糊查询
 ```java
 public class QueryDoc {
     
@@ -1417,7 +1410,7 @@ public class QueryDoc {
 
 }
 ```
-#### 高亮查询
+高亮查询
 ```java
 public class QueryDoc {
     
@@ -1466,8 +1459,7 @@ public class QueryDoc {
 
 }
 ```
-### JavaAPI-文档-高级查询-最大值查询 & 分组查询
-#### 最大值查询
+最大值查询
 
 ```java
 public class QueryDoc {
@@ -1492,7 +1484,7 @@ public class QueryDoc {
 
 }
 ```
-#### 分组查询
+分组查询
 ```java
 public class QueryDoc {
 
@@ -1517,38 +1509,50 @@ public class QueryDoc {
 ```
 
 
-# Elasticsearch环境
-**单机 & 集群**<br />单台 Elasticsearch 服务器提供服务，往往都有最大的负载能力，超过这个阈值，服务器<br />性能就会大大降低甚至不可用，所以生产环境中，一般都是运行在指定服务器集群中。<br />除了负载能力，单点服务器也存在其他问题：
+### Elasticsearch环境
+单台 Elasticsearch 服务器提供服务，往往都有最大的负载能力，超过这个阈值，服务器性能就会大大降低甚至不可用，所以生产环境中，一般都是运行在指定服务器集群中。除了负载能力，单点服务器也存在其他问题：
 
-单台机器存储容量有限<br />单服务器容易出现单点故障，无法实现高可用<br />单服务的并发处理能力有限<br />配置服务器集群时，集群中节点数量没有限制，大于等于 2 个节点就可以看做是集群了。一<br />般出于高性能及高可用方面来考虑集群中节点数量都是 3 个以上
+- 单台机器存储容量有限
+- 单服务器容易出现单点故障，无法实现高可用
+- 单服务的并发处理能力有限
+- 配置服务器集群时，集群中节点数量没有限制，大于等于 2 个节点就可以看做是集群了
+- 般出于高性能及高可用方面来考虑集群中节点数量都是 3 个以上
 
-总之，集群能提高性能，增加容错。
+总之，集群能提高性能，增加容错
 
-**集群 Cluster**<br />一个集群就是由一个或多个服务器节点组织在一起，共同持有整个的数据，并一起提供索引和搜索功能。**一个 Elasticsearch 集群有一个唯一的名字标识，这个名字默认就是”elasticsearch”。这个名字是重要的，因为一个节点只能通过指定某个集群的名字，来加入这个集群。
+:::info 集群 Cluster
+一个集群就是由一个或多个服务器节点组织在一起，共同持有整个的数据，并一起提供索引和搜索功能。
+一个 Elasticsearch 集群有一个唯一的名字标识，这个名字默认就是”elasticsearch”。这个名字是重要的，因为一个节点只能通过指定某个集群的名字，来加入这个集群
+:::
 
-**节点 Node**<br />集群中包含很多服务器， 一个节点就是其中的一个服务器。 作为集群的一部分，它存储数据，参与集群的索引和搜索功能。
+
+:::info 节点 Node
+集群中包含很多服务器， 一个节点就是其中的一个服务器。 作为集群的一部分，它存储数据，参与集群的索引和搜索功能
+:::
 
 一个节点也是由一个名字来标识的，默认情况下，这个名字是一个随机的漫威漫画角色的名字，这个名字会在启动的时候赋予节点。这个名字对于管理工作来说挺重要的，因为在这个管理过程中，你会去确定网络中的哪些服务器对应于 Elasticsearch 集群中的哪些节点。
 
 一个节点可以通过配置集群名称的方式来加入一个指定的集群。默认情况下，每个节点都会被安排加入到一个叫做“elasticsearch”的集群中，这意味着，如果你在你的网络中启动了若干个节点，并假定它们能够相互发现彼此，它们将会自动地形成并加入到一个叫做“elasticsearch”的集群中。
 
-在一个集群里，只要你想，可以拥有任意多个节点。而且，如果当前你的网络中没有运<br />行任何 Elasticsearch 节点，这时启动一个节点，会默认创建并加入一个叫做“elasticsearch”的<br />集群。
+在一个集群里，只要你想，可以拥有任意多个节点。而且，如果当前你的网络中没有运行任何 Elasticsearch 节点，这时启动一个节点，会默认创建并加入一个叫做“elasticsearch”的集群。
 
-## Windows集群部署
+#### Windows集群部署
 
 - 创建 elasticsearch-cluster 文件夹
 - 创建 elasticsearch-7.8.0-cluster 文件夹，在内部复制三个 elasticsearch 服务
 - 修改集群文件目录中每个节点的 config/elasticsearch.yml 配置文件
 - 如果有必要，删除每个节点中的 data 目录中所有内容
 
-![image.png](/image/blog/elk1.png?raw=true)
+![image.png](/doc/elk/img-3.png)
 
-![image.png](/image/blog/elk2.png?raw=true)![image.png](/image/blog/elk3.png?raw=true)
+![image.png](/doc/elk/img-4.png)
 
-**启动集群**<br />分别依次双击执行节点的bin/elasticsearch.bat, 启动节点服务器（可以编写一个脚本启动），启动后，会自动加入指定名称的集群。
+![image.png](/doc/elk/img-5.png)
 
-**测试集群**<br />用Postman，查看集群状态<br />GET [http://127.0.0.1:1001/_cluster/health](http://127.0.0.1:1001/_cluster/health)<br />GET [http://127.0.0.1:1002/_cluster/health](http://127.0.0.1:1002/_cluster/health)<br />GET [http://127.0.0.1:1003/_cluster/health](http://127.0.0.1:1003/_cluster/health)<br />[<br />](https://blog.csdn.net/u011863024/article/details/115721328)
-```java
+启动集群，分别依次双击执行节点的 `bin/elasticsearch.bat`, 启动节点服务器（可以编写一个脚本启动），启动后，会自动加入指定名称的集群。
+
+测试集群，用Postman，查看集群状态<br />GET [http://127.0.0.1:1001/_cluster/health](http://127.0.0.1:1001/_cluster/health)<br />GET [http://127.0.0.1:1002/_cluster/health](http://127.0.0.1:1002/_cluster/health)<br />GET [http://127.0.0.1:1003/_cluster/health](http://127.0.0.1:1003/_cluster/health)
+```json
 {
     "cluster_name": "my-application",
     "status": "green",
@@ -1567,46 +1571,46 @@ public class QueryDoc {
     "active_shards_percent_as_number": 100.0
 }
 ```
-**status字段**指示着当前集群在总体上是否工作正常。它的三种颜色含义如下：
+`status` 字段指示着当前集群在总体上是否工作正常。它的三种颜色含义如下：
 
-1. green：所有的主分片和副本分片都正常运行
-1. yellow：所有的主分片都正常运行，但不是所有的副本分片都正常运行
-1. red：有主分片没能正常运行
+- green：所有的主分片和副本分片都正常运行
+- yellow：所有的主分片都正常运行，但不是所有的副本分片都正常运行
+- red：有主分片没能正常运行
 
 用Postman，在一节点增加索引，另一节点获取索引
 
 向集群中的node-1001节点增加索引：
-```java
+```
 #PUT http://127.0.0.1:1001/user
 ```
 向集群中的node-1003节点获取索引：
-```java
+```
 #GET http://127.0.0.1:1003/user
 ```
 如果在1003创建索引，同样在1001也能获取索引信息，这就是集群能力
 
 
-## 环境-Linux单节点部署
+#### 环境-Linux单节点部署
 
-> 下载软件 [链接](https://www.elastic.co/cn/downloads/past-releases/elasticsearch-7-8-0)
+>  [下载连接](https://www.elastic.co/cn/downloads/past-releases/elasticsearch-7-8-0)
 
-```java
+```shell
 # 解压缩
 tar -zxvf elasticsearch-7.8.0-linux-x86_64.tar.gz -C /opt/module
 
 # 改名
 mv elasticsearch-7.8.0 es
 
-useradd es #新增 es 用户
+useradd es # 新增 es 用户
 
-passwd es #为 es 用户设置密码
+passwd es # 为 es 用户设置密码
 
-userdel -r es #如果错了，可以删除再加
+userdel -r es # 如果错了，可以删除再加
 
-chown -R es:es /opt/module/es #文件夹所有者
+chown -R es:es /opt/module/es # 文件夹所有者
 ```
-修改/opt/module/es/config/elasticsearch.yml文件
-```java
+修改 `/opt/module/es/config/elasticsearch.yml` 文件
+```yaml
 # 加入如下配置
 cluster.name: elasticsearch
 node.name: node-1
@@ -1614,15 +1618,15 @@ network.host: 0.0.0.0
 http.port: 9200
 cluster.initial_master_nodes: ["node-1"]
 ```
-修改/etc/security/limits.conf
-```java
+修改 `/etc/security/limits.conf`
+```yaml
 # 在文件末尾中增加下面内容
 # 每个进程可以打开的文件数的限制
 es soft nofile 65536
 es hard nofile 65536
 ```
-修改/etc/security/limits.d/20-nproc.conf
-```java
+修改 `/etc/security/limits.d/20-nproc.conf`
+```yaml
 # 在文件末尾中增加下面内容
 # 每个进程可以打开的文件数的限制
 es soft nofile 65536
@@ -1631,14 +1635,14 @@ es hard nofile 65536
 * hard nproc 4096
 # 注： * 带表 Linux 所有用户名称
 ```
-修改/etc/sysctl.conf
-```java
+修改`/etc/sysctl.conf`
+```yaml
 # 在文件中增加下面内容
 # 一个进程可以拥有的 VMA(虚拟内存区域)的数量,默认值为 65536
 vm.max_map_count=655360
 ```
 重新加载
-```java
+```shell
 sysctl -p
 
 # 使用 ES 用户启动
@@ -1653,23 +1657,26 @@ bin/elasticsearch -d
 ```
 启动时，会动态生成文件，如果文件所属用户不匹配，会发生错误，需要重新进行修改用户和用户组
 
-![image.png](/image/blog/elk4.png?raw=true)
-```java
-#暂时关闭防火墙
+![image.png](/doc/elk/img-6.png)
+```shell
+# 暂时关闭防火墙
 systemctl stop firewalld
-#永久关闭防火墙
-systemctl enable firewalld.service #打开防火墙永久性生效，重启后不会复原
-systemctl disable firewalld.service #关闭防火墙，永久性生效，重启后不会复原
+# 永久关闭防火墙
+systemctl enable firewalld.service # 打开防火墙永久性生效，重启后不会复原
+systemctl disable firewalld.service # 关闭防火墙，永久性生效，重启后不会复原
 ```
-### 测试软件
-浏览器中输入地址： http://linux1:9200/<br />![image.png](/image/blog/elk5.png?raw=true)
+测试软件
+浏览器中输入地址： http://linux1:9200/
+![image.png](/doc/elk/img-7.png)
 
-# Elasticsearch进阶
+## ELK Stack
+![image.png](/doc/elk/img-8.png)
+- Input: 输入，输出数据可以是stdin，File，TCP，Redis，Syslog等
+- Filter: 过滤，将日志格式化，有丰富的过滤插件，Grok正则捕获，Date日期处理，JSON解码，Mutate数据修改
+- Output：输出，输出目标可以是Stdin，File，TCP，Redis，ES等
 
 
-# ELK Stack
-![image.png](/image/blog/elk6.png?raw=true)<br />Input:：输入，输出数据可以是stdin，File，TCP，Redis，Syslog等<br />Filter：过滤，将日志格式化，有丰富的过滤插件，Grok正则捕获，Date日期处理，JSON解码，Mutate数据修改<br />Output：输出，输出目标可以是Stdin，File，TCP，Redis，ES等
-# Elasticsearch-Head插件
+### Elasticsearch-Head 插件
 > [下载](https://github.com/mobz/elasticsearch-head/releases)
 
 ```shell
@@ -1682,10 +1689,10 @@ http.cors.enabled: true
 http.cors.allow-origin: "*"
 ```
 
-# Logstash
+### Logstash
 > [下载](https://elasticsearch.cn/download/#seg-3) 
 
-```json
+```nginx
 input {
   beats {
     port => 5044
@@ -1700,12 +1707,12 @@ output {
 }
 
 ```
-```json
+```shell
 logstash -f logstash.conf
 ```
-## Input插件
+### Input插件
 
-```json
+```nginx
 input {
   stdin {
     
@@ -1718,7 +1725,7 @@ output {
   }
 }
 ```
-```json
+```nginx
 input {
   file {
     path => "/var/log/message"
@@ -1733,7 +1740,7 @@ output {
   }
 }
 ```
-```json
+```nginx
 input {
   tcp {
     port => 9200
@@ -1747,7 +1754,7 @@ output {
   }
 }
 ```
-```json
+```nginx
 input {
   beats {
     port => 5044
@@ -1761,9 +1768,9 @@ output {
 }
 ```
 
-## Codec插件
+### Codec插件
 
-```json
+```nginx
 input {
   stdin {
     codec => json {
@@ -1778,7 +1785,7 @@ output {
   }
 }
 ```
-```json
+```nginx
 input {
   stdin {
     codec => multiline {
@@ -1797,8 +1804,8 @@ output {
 }
 ```
 
-## Filter
-```json
+### Filter
+```nginx
 input {
   stdin {
    
@@ -1820,7 +1827,7 @@ output {
 }
 ```
 
-```json
+```nginx
 input {
   stdin {
    
@@ -1841,10 +1848,10 @@ output {
   }
 }
 ```
- <br />![image.png](/image/blog/elk7.png?raw=true)
+![image.png](/doc/elk/img-9.png)
 > [GEOIP下载](https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=O38GA2SviPLnqfF5&suffix=tar.gz) [官网](https://www.maxmind.com/en/accounts/347303/geoip/downloads?show_all_dates=1) [校验文件下载](https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=O38GA2SviPLnqfF5&suffix=tar.gz.sha256)  [grok正则](http://grokdebug.herokuapp.com)
 
-```json
+```nginx
 input {
   stdin {
    
@@ -1853,7 +1860,7 @@ input {
 filter {
   gork {
     match => {
-      // 正则匹配消息 日志示例： 223.72.85.86 GET /index.html 15824 0.043
+      # 正则匹配消息 日志示例： 223.72.85.86 GET /index.html 15824 0.043
       "message" => "%{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes} %{NUMBER:duration}"
     }
   }
@@ -1869,7 +1876,7 @@ output {
   }
 }
 
-// 自定义匹配方式
+# 自定义匹配方式
 gork {
     // ID [0-9A-Z]{10,11}
     patterns_dir => "D:\path\ELK\patterns\id_dir"
@@ -1879,7 +1886,7 @@ gork {
     }
   }
 
-// 匹配多个
+# 匹配多个
 gork {
     // ID [0-9A-Z]{10,11}
     patterns_dir => "D:\path\ELK\patterns\id_dir"
@@ -1889,9 +1896,11 @@ gork {
     ]
   }
 ```
-![image.png](/image/blog/elk8.png?raw=true)![image.png](/image/blog/elk9.png?raw=true)<br />![image.png](/image/blog/elk10.png?raw=true)
-## Output插件
-```json
+![image.png](/doc/elk/img-10.png)
+![image.png](/doc/elk/img-11.png)
+![image.png](/doc/elk/img-12.png)
+### Output插件
+```nginx
 input {
   file {
     path => ["/var/log/messages"]
@@ -1933,11 +1942,22 @@ output {
   }
 }
 ```
-# Kibana
+
+
+## Kibana
+
+
+- PV/UV
+- 用户地理位置分布
+- URL，HTTP Status，IP TOP10
+
+![image.png](/doc/elk/img-23.png)
+
 ```yaml
 i18n.locale: "zh-CN"
 ```
-![image.png](/image/blog/elk11.png?raw=true)<br />使用nginx代理kibana
+![image.png](/doc/elk/img-13.png)
+使用nginx代理kibana
 
 ```nginx
 http {
@@ -1948,7 +1968,7 @@ http {
     location / {
       proxy_pass http://localhost:5601;
       auth_basic "请输入用户名和密码！";
-      // 指定用户文件
+      # 指定用户文件
       auth_basic_user_file /mydata/nginx/conf/user.db;  
       root html;
       index index.html index.htm;
@@ -1962,13 +1982,13 @@ http {
 openssl passwd -crytp 123456
 ```
 ```nginx
-// 用户名：密码
+# 用户名：密码
 fxb: faHgR3X/qNehA
 ```
-# Redis
+## Redis
 
-![image.png](/image/blog/elk12.png?raw=true)<br />   
-```json
+![image.png](/doc/elk/img-14.png)
+```nginx
 input {
   file {
     path => ["/var/log/messages"]
@@ -1998,7 +2018,7 @@ output {
   }
 }
 ```
-```json
+```nginx
 input {
   redis {
     host => "localhost"
@@ -2038,8 +2058,8 @@ output {
 }
 ```
 
-# FileBeat
-![image.png](/image/blog/elk13.png?raw=true)
+## FileBeat
+![image.png](/doc/elk/img-15.png)
 > [相关说明](https://www.elastic.co/guide/en/beats/filebeat/7.7/configuration-filebeat-options.html)
 
 ```yaml
@@ -2067,9 +2087,10 @@ output.redis:
   timeout: 5
   datatype: list
 ```
-# 日志收集
-## Nginx日志收集
-![image.png](/image/blog/elk14.png?raw=true)![image.png](/image/blog/elk15.png?raw=true)
+## 日志收集
+### Nginx日志收集
+![image.png](/doc/elk/img-16.png)
+![image.png](/doc/elk/img-17.png)
 ```nginx
 # 日志
 error_log  /var/log/nginx/error.log warn;
@@ -2098,7 +2119,7 @@ http {
     access_log  /var/log/nginx/access.log  json;
 }
 ```
-![image.png](/image/blog/elk16.png?raw=true)<br /> 
+![image.png](/doc/elk/img-18.png)
 ```yaml
 filebeat.inputs:
 - type: log 
@@ -2126,7 +2147,7 @@ output.redis:
   timeout: 5
   datatype: list
 ```
-```json
+```nginx
 input {
     redis {
         host => "localhost"
@@ -2167,12 +2188,10 @@ output {
   stdout{codec => rubydebug }
 }
 ```
-![image.png](/image/blog/elk17.png?raw=true)
+![image.png](/doc/elk/img-19.png)
 
-# <br />
-
-## Java堆栈日志收集
-![image.png](/image/blog/elk18.png?raw=true)
+### Java堆栈日志收集
+![image.png](/doc/elk/img-20.png)
 ```yaml
 filebeat.prospectors:
 - type: log
@@ -2196,9 +2215,11 @@ output.redis:
   datatype: list
 ```
 
-## 定制日志格式收集
-ngxin默认的 main 格式日志<br />![image.png](/image/blog/elk19.png?raw=true)<br />使用 Grok 进行匹配
-```json
+### 定制日志格式收集
+ngxin默认的 main 格式日志
+![image.png](/doc/elk/img-21.png)
+<br />使用 Grok 进行匹配
+```nginx
 input {
     redis {
         host => "localhost"
@@ -2245,7 +2266,7 @@ output {
   stdout{codec => rubydebug }
 }
 ```
-## Log4j收集
+### Log4j收集
 
 ```properties
 ### 设置###
@@ -2282,10 +2303,10 @@ log4j.appender.logstash.LocationInfo=true
 ```
 
 1. 第一份输出到控制台
-1. 第二份把DEBUG 级别以上的日志到文件
-1. 第三份把输出ERROR 级别以上的日志到文件
-1. 第四份输出到logstash
-```json
+2. 第二份把DEBUG 级别以上的日志到文件
+3. 第三份把输出ERROR 级别以上的日志到文件
+4. 第四份输出到logstash
+```nginx
 input {
     log4j {
         host => "127.0.0.1"
@@ -2324,13 +2345,4 @@ public class Log4jTest {
     }
 }
 ```
-![](/image/blog/elk20.png?raw=true)
-
-
-## Kibana仪表盘可视化
-
-- PV/UV
-- 用户地理位置分布
-- URL，HTTP Status，IP TOP10
-
-![image.png](/image/blog/elk21.png?raw=true)
+![image.png](/doc/elk/img-22.png)

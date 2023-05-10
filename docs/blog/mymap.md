@@ -1,16 +1,3 @@
----
-title: 实现一个简易Map
-categories:  日常学习
-tags:
-  - java
-excerpt: 实现一个简易Map
-date: 2021-06-11 9:10:03
-cover: '/image/blog/map.png?raw=true'
----
-
-![](/image/blog/%E6%9C%AA%E5%91%BD%E5%90%8D1645368182.png?raw=true)
-
-
 ```java
 package com.susu.utils;
 
@@ -19,7 +6,7 @@ import java.util.*;
 /**
  * <p>Description: Implement the map interface and use the hash principle</p>
  * <p>实现Map接口并利用散列原理</p>
- * @author sujay
+ * @author fxbsujay@gmail.com
  * @version 21:59 2022/2/20
  * @see Map
  * @since JDK1.8

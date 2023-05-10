@@ -1,23 +1,12 @@
----
-title: 雪花算法
-categories: 算法
-tags:
-  - java
-  - 数据结构与算法
-excerpt: 雪花算法
-date: 2022-01-20 9:10:03
-cover: '/image/blog/20201015160244631.jpg?raw=true'
----
-
-```
+```java
 package com.susu.utils;
 
 /**
  * <p>Description: Snow flakeId Worker</p>
  * <p>雪花算法ID</p>
- * @author sujay
+ * @author fxbsujay@gmail.com
  * @version 13:08 2022/4/28
- * @since JDK1.8 <br/>
+ * @since JDK1.8
  */
 public class SnowFlakeUtils {
 

@@ -39,18 +39,28 @@ export default defineConfig({
             { icon: 'github', link: 'https://github.com/fxbsujay' }
         ],
         nav: [
-            { text: '博客', link: '/blog/hexo' },
+            { text: '博客', link: '/blog/jdk_support' },
         ],
         sidebar: {
             '/blog': [
                 {
-                    text: 'Java',
+                    text: '后端知识库',
                     collapsed: false,
                     items: [
-                        { text: 'JDK17 新特性', link: '/blog/jdk_support' },
+                        { text: 'JAVA JDK17 新特性', link: '/blog/jdk_support' },
                         { text: 'MySql 索引', link: '/blog/mysql_index' },
+                        { text: 'ELK 学习文档', link: '/blog/elk' },
                         { text: 'Netty 源码分析', link: '/blog/netty' },
-                        { text: 'ELK', link: '/blog/elk' },
+                        { text: '雪花算法', link: '/blog/snow-flake' },
+                        { text: '实现一个简易Map', link: '/blog/mymap' },
+                        { text: 'Seata 分布式事务', link: '/blog/shiwu' }
+                    ]
+                },
+                {
+                    text: '前端知识库',
+                    collapsed: false,
+                    items: [
+                        { text: 'Vue3 快速上手', link: '/blog/vue' },
                     ]
                 },
                 {
