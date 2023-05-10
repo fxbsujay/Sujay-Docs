@@ -49,6 +49,8 @@ export default defineConfig({
                     items: [
                         { text: 'JAVA JDK17 新特性', link: '/blog/jdk_support' },
                         { text: 'MySql 索引', link: '/blog/mysql_index' },
+                        { text: 'Java JUC', link: '/blog/juc'},
+                        { text: '消息队列', link: '/blog/mq' },
                         { text: 'ELK 学习文档', link: '/blog/elk' },
                         { text: 'Netty 源码分析', link: '/blog/netty' },
                         { text: '雪花算法', link: '/blog/snow-flake' },
