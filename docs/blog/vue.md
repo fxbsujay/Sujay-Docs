@@ -391,9 +391,9 @@ setup(props,context) {
 使用传统OptionsAPI中，新增或者修改一个需求，就需要分别在data，methods，computed里修改,
 而Composition API，我们可以更加优雅的组织我们的代码，函数，让相关功能的代码更加有序的组织在一起
 
-![](/doc/vue/img-3.image)
+![](/doc/vue/img-3.png)
 
-![](/doc/vue/img-2.image)
+![](/doc/vue/img-2.png)
 
 ## 新的组件
 

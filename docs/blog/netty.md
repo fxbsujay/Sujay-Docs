@@ -270,10 +270,10 @@ public void initChannel(final Channel ch) {
 ```
 Register主要完成了以下三个操作
 
-- 完成了主线程到NIO的**线程切换**
-   - 通过**eventLoop.inEventLoop()** 进行线程判断，判断当前线程是否为NIO线程
+- 完成了主线程到NIO的线程切换
+   - 通过 `eventLoop.inEventLoop()` 进行线程判断，判断当前线程是否为NIO线程
    - 切换的方式为让eventLoop执行register的操作
-   - **register的操作在NIO线程中完成调用doRegister方法**
+   - register的操作在NIO线程中完成调用doRegister方法
 ```java
 // javaChannel()即为ServerSocketChannel
 // eventLoop().unwrappedSelector()获取eventLoop中的Selector
@@ -281,20 +281,19 @@ Register主要完成了以下三个操作
 selectionKey = javaChannel().register(eventLoop().unwrappedSelector(), 0, this);
 ```
 
-- **将ServerSocketChannel注册到EventLoop的Selector中**
+- 将ServerSocketChannel注册到EventLoop的Selector中
    - 此时还未关注事件
    - 添加NioServerSocketChannel附件
-- 通过**invokeHandlerAddedIfNeeded**调用init中的**initChannel**方法
-   - initChannel方法主要创建了**两个handler**
+- 通过invokeHandlerAddedIfNeeded调用init中的initChannel方法
+   - initChannel方法主要创建了两个handler
       - 一个handler负责设置配置
       - 一个handler负责发生Accept事件后建立连接
 
+### doBind0
+绑定端口
 
-<br />
+在 doRegister 和 invokeHandlerAddedIfNeeded 操作中的完成后，会调用 safeSetSuccess(promise) 方法，向Promise中设置执行成功的结果。此时 doBind 方法中由 initAndRegister 返回的ChannelFuture对象regFuture便会由NIO线程异步执行doBind0绑定操作
 
-<a name="gYTpl"></a>
-## doBind0
-**绑定端口**<br />在**doRegister**和**invokeHandlerAddedIfNeeded**操作中的完成后，会调用**safeSetSuccess(promise)**方法，向Promise中设置执行成功的结果。此时**doBind**方法中由**initAndRegister**返回的ChannelFuture对象regFuture便会由NIO线程异步执行doBind0绑定操作<br /> 
 ```java
 // initAndRegister为异步方法，会返回ChannelFuture对象
 final ChannelFuture regFuture = initAndRegister();
@@ -316,7 +315,9 @@ regFuture.addListener(new ChannelFutureListener() {
     }
 });
 ```
-> **doBind0最底层调用的是ServerSocketChannel的bind方法**<br /> NioServerSocketChannel.doBind方法
+doBind0最底层调用的是ServerSocketChannel的bind方法
+
+NioServerSocketChannel.doBind方法
 
 通过该方法，绑定了对应的端口
 ```java
@@ -331,7 +332,9 @@ protected void doBind(SocketAddress localAddress) throws Exception {
     }
 }
 ```
-**关注事件**<br />在绑定端口操作完成后，会判断各种所有初始化操作是否已经完成，若完成，则会添加ServerSocketChannel感兴趣的事件<br />​<br />
+关注事件
+
+在绑定端口操作完成后，会判断各种所有初始化操作是否已经完成，若完成，则会添加ServerSocketChannel感兴趣的事件<br />​<br />
 ```java
 if (!wasActive && isActive()) {
     invokeLater(new Runnable() {
@@ -342,7 +345,7 @@ if (!wasActive && isActive()) {
     });
 }
 ```
-> 最终在**AbstractNioChannel.doBeginRead**方法中，会添加ServerSocketChannel添加Accept事件
+最终在 `AbstractNioChannel.doBeginRead` 方法中，会添加ServerSocketChannel添加Accept事件
 
 ```java
 @Override
@@ -363,26 +366,23 @@ protected void doBeginRead() throws Exception {
     }
 }
 ```
-**注意**：此处设置interestOps时使用的方法，**避免覆盖关注的其他事件**
+:::warning 注意
+此处设置interestOps时使用的方法，避免覆盖关注的其他事件
+:::
 
-- 首先获取Channel所有感兴趣的事件
+首先获取Channel所有感兴趣的事件
 ```java
 final int interestOps = selectionKey.interestOps();
 ```
-
-- 然后再设置其感兴趣的事件
-
-
-
+然后再设置其感兴趣的事件
 ```java
 selectionKey.interestOps(interestOps | readInterestOp);
 ```
-> **各个事件对应的值**
+各个事件对应的值
 
-![](/image/blog/20210506090047.png)
-<a name="KD021"></a>
+![](/doc/netty-principle/img-0.png)
 
-## 总结
+### 总结
 通过上述步骤，完成了
 
 - NioServerSocketChannel与ServerSocketChannel的创建
@@ -390,13 +390,12 @@ selectionKey.interestOps(interestOps | readInterestOp);
 - 绑定了对应的端口
 - 关注了Accept事件
 
+## NioEventLoop剖析
 
-# NioEventLoop剖析
-
-## 组成
+### 组成
 NioEventLoop的重要组成部分有三个
 
-- **Selector**
+Selector
 ```java
 public final class NioEventLoop extends SingleThreadEventLoop {
     
@@ -412,7 +411,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
 }
 ```
 
-- **Thread与TaskQueue**
+Thread与TaskQueue
 
 ```java
 public abstract class SingleThreadEventExecutor extends AbstractScheduledEventExecutor implements OrderedEventExecutor {
@@ -423,8 +422,8 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
     private volatile Thread thread;
 }
 ```
-### Selector的创建
-> Selector是在NioEventLoop的构造方法中被创建的
+#### Selector的创建
+Selector是在NioEventLoop的构造方法中被创建的
 
 ```java
 NioEventLoop(NioEventLoopGroup parent, Executor executor, SelectorProvider selectorProvider, SelectStrategy strategy, RejectedExecutionHandler rejectedExecutionHandler, EventLoopTaskQueueFactory queueFactory) {
@@ -449,13 +448,13 @@ private SelectorTuple openSelector() {
     }
 }
 ```
-NioEventLoop的构造方法中，调用了openSelector()方法， 该方法会返回一个<br />SelectorTuple对象，该方法是创建Selector的核心方法。openSelector()方法内部调用了
+NioEventLoop的构造方法中，调用了 openSelector() 方法， 该方法会返回一个 SelectorTuple 对象，该方法是创建 Selector 的核心方法。openSelector() 方法内部调用了
 ```java
 unwrappedSelector = provider.openSelector();
 ```
-获得了Selector对象**unwrappedSelector**
+获得了 Selector 对象 unwrappedSelector
 
-后面会通过反射，修改**unwrappedSelector**中SelectedKeys的实现，然后通过**SelectedSelectionKeySetSelector**方法获得selector。**最后通过SelectorTuple的构造方法，将该Selector的值赋给SelectorTuple类中的selector与unwrappedSelector**
+后面会通过反射，修改 unwrappedSelector中SelectedKeys 的实现，然后通过 SelectedSelectionKeySetSelector 方法获得 selector。最后通过 SelectorTuple 的构造方法，将该 Selector 的值赋给 SelectorTuple 类中的 selector 与 unwrappedSelector
 ```java
 private static final class SelectorTuple {
     final Selector unwrappedSelector;
@@ -475,17 +474,18 @@ private static final class SelectorTuple {
     }
 }
 ```
-再通过NioEventLoop的构造方法，将SelectorTuple中的Selector赋值给NioEventLoop中的Selector<br />**​**
+再通过 NioEventLoop 的构造方法，将 SelectorTuple 中的 Selector 赋值给 NioEventLoop中的Selector
 
-**​**
+#### 两个Selector
+NioEventLoop中有selector和unwrappedSelector两个Selector，它们的区别主要在于SelectedKeys的数据结构
 
-### 两个Selector
-NioEventLoop中有selector和unwrappedSelector两个Selector，**它们的区别主要在于SelectedKeys的数据结构**
+- selector中的SelectedKeys是基于数组的
+- unwrappedSelector中的是基于HashSet的
 
-- selector中的SelectedKeys是**基于数组**的
-- unwrappedSelector中的是**基于HashSet**的
+<div class="tip custom-block line">
+这样做的主要目的是，数组的遍历效率要高于HashSet
+</div>
 
-这样做的主要目的是，**数组的遍历效率要高于HashSet**<br /> 
 ```java
 private SelectorTuple openSelector() {
     final Selector unwrappedSelector;
@@ -544,7 +544,7 @@ private SelectorTuple openSelector() {
 
 获得数组实现SelectedKeys的Selector的原理是反射，主要步骤如下
 
-- 获得**基于数组**的selectedKeySet实现
+- 获得基于数组的selectedKeySet实现
 ```java
 // 获得基于数组的selectedKeySet实现
 final SelectedSelectionKeySet selectedKeySet = new SelectedSelectionKeySet();
@@ -554,20 +554,22 @@ SelectedSelectionKeySet() {
 }
 ```
 
-- 通过**反射**拿到unwrappedSelector中的SelectedKeySet并将其**替换为selectedKeySet**
-- **通过Selector的构造方法**获得selector
+- 通过反射拿到unwrappedSelector中的SelectedKeySet并将其替换为selectedKeySet
+- 通过Selector的构造方法获得selector
 ```java
 new SelectedSelectionKeySetSelector(unwrappedSelector, selectedKeySet)
 ```
 
-- **通过SelectorTuple的构造方法**获得拥有两种Selector的SelectorTuple对象，并返回给NioEventLoop
+- 通过SelectorTuple的构造方法获得拥有两种Selector的SelectorTuple对象，并返回给NioEventLoop
 ```java
 // 调用构造函数，创建unwrappedSelector与selector
 return new SelectorTuple(unwrappedSelector, new SelectedSelectionKeySetSelector(unwrappedSelector, selectedKeySet));
 ```
-<a name="F9Aje"></a>
-## NIO线程启动时机
-**启动**<br />NioEventLoop中的线程，**在首次执行任务时，才会被创建，且只会被创建一次**<br />**测试代码**
+
+### NIO线程启动时机
+启动NioEventLoop中的线程，在首次执行任务时，才会被创建，且只会被创建一次
+
+测试代码
 ```java
 public class TestNioEventLoop {
     public static void main(String[] args) {
@@ -640,7 +642,7 @@ private void startThread() {
     }
 }
 ```
-**进入doStartThread，真正创建NIO线程并执行任务**
+进入doStartThread，真正创建NIO线程并执行任务
 ```java
 private void doStartThread() {
     assert thread == null;
@@ -666,7 +668,9 @@ private void doStartThread() {
     });
 }
 ```
-通过SingleThreadEventExecutor.this.run()执行传入的任务（task）<br />该run方法是**NioEvnetLoop的run方法**
+通过SingleThreadEventExecutor.this.run()执行传入的任务（task）
+
+该run方法是NioEvnetLoop的run方法
 ```java
 @Override
 protected void run() {
@@ -707,9 +711,8 @@ protected void run() {
     	}
 	}
 ```
-<a name="TVNbW"></a>
-### 唤醒
-NioEvnetLoop需要IO事件、普通任务以及定时任务，任务在run方法的for循环中<br />
+#### 唤醒
+NioEvnetLoop需要IO事件、普通任务以及定时任务，任务在run方法的for循环中
 
 ```java
 @Override
@@ -722,7 +725,9 @@ protected void run() {
     }
 }
 ```
-中被执行，但**该循环不会空转，执行到某些代码时，会被阻塞**<br />run方法中有SELECT分支
+中被执行，但该循环不会空转，执行到某些代码时，会被阻塞
+
+run方法中有SELECT分支
 ```java
 case SelectStrategy.SELECT:
 	long curDeadlineNanos = nextScheduledTaskDeadlineNanos();
@@ -737,7 +742,7 @@ case SelectStrategy.SELECT:
         }
     }
 ```
-会执行NioEvnetLoop的select方法，**该方法内部会根据情况，执行selector的有参和无参的select方法**
+会执行NioEvnetLoop的select方法，该方法内部会根据情况，执行selector的有参和无参的select方法
 ```java
 private int select(long deadlineNanos) throws IOException {
     // 如果没有指定阻塞事件，就调用select()
@@ -750,7 +755,9 @@ private int select(long deadlineNanos) throws IOException {
     return timeoutMillis <= 0 ? selector.selectNow() : selector.select(timeoutMillis);
 }
 ```
-但需要注意的是，**select方法是会阻塞线程的，当没有IO事件，但有其他任务需要执行时，需要唤醒线程**<br />唤醒是通过execute最后的if代码块来完成的
+但需要注意的是，select方法是会阻塞线程的，当没有IO事件，但有其他任务需要执行时，需要唤醒线程
+
+唤醒是通过execute最后的if代码块来完成的
 ```java
 // 有任务需要被执行时，唤醒阻塞的NIO线程
 if (!addTaskWakesUp && immediate) {
@@ -771,16 +778,12 @@ protected void wakeup(boolean inEventLoop) {
 ```
 唤醒时需要进行两个判断
 
-- 判断提交任务的**是否为NIO线程**
+- 判断提交任务的是否为NIO线程
    - 若是其他线程，才能唤醒NIO线程
    - 若是NIO线程自己，则不能唤醒
-- 通过**AtomicLong**保证有多个线程同时提交任务时，只有一个线程能够唤醒NIO线程
+- 通过 `AtomicLong` 保证有多个线程同时提交任务时，只有一个线程能够唤醒NIO线程
 
-
-
-<br />
-<a name="f9FLE"></a>
-### SELECT分支
+#### SELECT分支
 run方法的switch语句有多条分支，具体执行分支的代码由strategy变量控制
 ```java
 int strategy = selectStrategy.calculateStrategy(selectNowSupplier, hasTasks());
@@ -796,10 +799,10 @@ public int calculateStrategy(IntSupplier selectSupplier, boolean hasTasks) throw
     return hasTasks ? selectSupplier.get() : SelectStrategy.SELECT;
 }
 ```
-该方法会**根据hasTaks变量判断任务队列中是否有任务**
+该方法会根据hasTaks变量判断任务队列中是否有任务
 
-- 若有任务，则**通过selectSupplier获得strategy的值**
-   - **get方法会selectNow方法，顺便拿到IO事件**
+- 若有任务，则通过selectSupplier获得strategy的值
+   - get方法会selectNow方法，顺便拿到IO事件
 ```java
 private final IntSupplier selectNowSupplier = new IntSupplier() {
     public int get() throws Exception {
@@ -814,12 +817,13 @@ int selectNow() throws IOException {
 
 - 没有任务，就会进入SELECT分支
 
-也就说，**当任务队列中没有任务时，才会进入SELECT分支，让NIO线程阻塞，而不是空转。若有任务，则会通过get方法调用selector.selectNow方法，顺便拿到IO事件**
+也就说，当任务队列中没有任务时，才会进入SELECT分支，让NIO线程阻塞，而不是空转。若有任务，则会通过get方法调用selector.selectNow方法，顺便拿到IO事件
 
+### Java NIO空轮询BUG
+Java NIO空轮询BUG也就是JavaNIO在Linux系统下的epoll空轮询问题
 
-<a name="xwaxz"></a>
-## Java NIO空轮询BUG
-Java NIO空轮询BUG也就是JavaNIO在Linux系统下的epoll空轮询问题<br />**在NioEventLoop中，因为run方法中存在一个死循环，需要通过selector.select方法来阻塞线程。但是select方法因为BUG，可能无法阻塞线程，导致循环一直执行，使得CPU负载升高**
+在NioEventLoop中，因为run方法中存在一个死循环，需要通过selector.select方法来阻塞线程。但是select方法因为BUG，可能无法阻塞线程，导致循环一直执行，使得CPU负载升高
+
 ```java
 @Override
 protected void run() {
@@ -840,7 +844,9 @@ protected void run() {
 	}
 }
 ```
-**Netty中通过selectCnt变量来检测select方法是否发生空轮询BUG**<br />若发生空轮询BUG，那么selectCnt的值会**增长是十分迅速**。当selectCnt的值大于等于SELECTOR_AUTO_REBUILD_THRESHOLD（默认512）时，Netty则判断其出现了空轮询BUG，进行如下处理
+Netty中通过selectCnt变量来检测select方法是否发生空轮询BUG
+
+若发生空轮询BUG，那么selectCnt的值会增长是十分迅速。当selectCnt的值大于等于SELECTOR_AUTO_REBUILD_THRESHOLD（默认512）时，Netty则判断其出现了空轮询BUG，进行如下处理
 ```java
 if (SELECTOR_AUTO_REBUILD_THRESHOLD > 0 && selectCnt >= SELECTOR_AUTO_REBUILD_THRESHOLD) {
     // The selector returned prematurely many times in a row.
@@ -852,10 +858,12 @@ if (SELECTOR_AUTO_REBUILD_THRESHOLD > 0 && selectCnt >= SELECTOR_AUTO_REBUILD_TH
     return true;
 }
 ```
-**通过rebuildSelector方法重建selector，将原selector的配置信息传给新selector，再用新selector覆盖旧selector。同时将selectCnt的值设置为0**
-<a name="YwSEi"></a>
-## ioRatio
-NioEventLoop可以处理IO事件和其他任务。不同的操作所耗费的时间是不同的，**想要控制NioEventLoop处理IO事件花费时间占执行所有操作的总时间的比例，需要通过ioRatio来控制**<br />**NioEventLoop.run方法**
+通过rebuildSelector方法重建selector，将原selector的配置信息传给新selector，再用新selector覆盖旧selector。同时将selectCnt的值设置为0
+
+### ioRatio
+NioEventLoop可以处理IO事件和其他任务。不同的操作所耗费的时间是不同的，想要控制NioEventLoop处理IO事件花费时间占执行所有操作的总时间的比例，需要通过ioRatio来控制
+
+NioEventLoop.run方法
 ```java
 // 处理IO事件时间比例，默认为50%
 final int ioRatio = this.ioRatio;
@@ -893,35 +901,34 @@ if (ioRatio == 100) {
     ranTasks = runAllTasks(0); 
 }
 ```
-**通过ioRatio控制各个任务执行的过程如下**
+通过ioRatio控制各个任务执行的过程如下
 
 - 判断ioRatio是否为100
    - 若是，判断是否需要处理IO事件（strategy>0）
       - 若需要处理IO事件，则先处理IO事件
-   - 若否（或IO事件已经处理完毕），**接下来去执行所有的普通任务和定时任务，直到所有任务都被处理完**
+   - 若否（或IO事件已经处理完毕），接下来去执行所有的普通任务和定时任务，直到所有任务都被处理完
 ```java
 // 没有指定执行任务的时间
 ranTasks = runAllTasks();
 ```
 若ioRatio不为100
 
-- 先去处理IO事件，**记录处理IO事件所花费的事件保存在ioTime中**
-- 接下来去处理其他任务，**根据ioTime与ioRatio计算执行其他任务可用的时间**
+- 先去处理IO事件，记录处理IO事件所花费的事件保存在ioTime中
+- 接下来去处理其他任务，根据ioTime与ioRatio计算执行其他任务可用的时间
 ```java
 // 比如ioTime为10s，ioRatio为50
 // 那么通过 10*(100-50)/50=10 计算出其他任务可用的时间为 10s
 // 处理IO事件占用的事件总比例为50%
 ranTasks = runAllTasks(ioTime * (100 - ioRatio) / ioRatio);
 ```
-
    - 执行其他任务一旦超过可用时间，则会停止执行，在下一次循环中再继续执行
-- 若没有IO事件需要处理，则去执行**最少数量**的普通任务和定时任务
+- 若没有IO事件需要处理，则去执行最少数量的普通任务和定时任务
 ```java
 // 运行最少数量的任务
 ranTasks = runAllTasks(0);
 ```
-<a name="MsGBx"></a>
-## 处理事件
+
+### 处理事件
 IO事件是通过NioEventLoop.processSelectedKeys()方法处理的
 ```java
 private void processSelectedKeys() {
@@ -982,7 +989,11 @@ final Object a = k.attachment();
 // 处理事件，传入附件NioServerSocketChannel
 processSelectedKey(k, (AbstractNioChannel) a);
 ```
-去处理各个事件<br />**真正处理各种事件的方法processSelectedKey**<br />获取SelectionKey的事件，然后进行相应处理
+去处理各个事件
+
+真正处理各种事件的方法processSelectedKey
+
+获取SelectionKey的事件，然后进行相应处理
 ```java
 private void processSelectedKey(SelectionKey k, AbstractNioChannel ch) {
     final AbstractNioChannel.NioUnsafe unsafe = ch.unsafe();
@@ -1037,10 +1048,8 @@ private void processSelectedKey(SelectionKey k, AbstractNioChannel ch) {
     }
 }
 ```
-<a name="l58Kn"></a>
-# Accept剖析
-<a name="vKDhU"></a>
-## NIO中处理Accept事件流程
+## Accept剖析
+### NIO中处理Accept事件流程
 
 - selector.select()阻塞线程，直到事件发生
 - 遍历selectionKeys
@@ -1075,11 +1084,9 @@ while (iter.hasNext()) {
     // ...
 }
 ```
-**其中前三步，在NioEventLoop剖析中已经分析过了，所以接下来主要分析后三步**
+其中前三步，在NioEventLoop剖析中已经分析过了，所以接下来主要分析后三步
 
-
-<a name="jbFsY"></a>
-## SocketChannel的创建与注册
+### SocketChannel的创建与注册
 发生Accept事件后，会执行NioEventLoop.run方法的如下if分支
 ```java
 if ((readyOps & (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)) != 0 || readyOps == 0) {
@@ -1127,7 +1134,7 @@ public void read() {
     }
 }
 ```
-NioSocketChannel.doReadMessages方法<br />该方法中处理accpet事件，**获得SocketChannel**，同时**创建了NioSocketChannel**，作为消息放在了readBuf中
+NioSocketChannel.doReadMessages方法<br />该方法中处理accpet事件，获得SocketChannel，同时创建了NioSocketChannel，作为消息放在了readBuf中
 ```java
 @Override
 protected int doReadMessages(List<Object> buf) throws Exception {
@@ -1178,7 +1185,7 @@ public void channelRead(ChannelHandlerContext ctx, Object msg) {
     }
 }
 ```
-通过AbstractUnsafe.register 方法，将SocketChannel注册到了Selector中，**过程与启动流程中的Register过程类似**
+通过AbstractUnsafe.register 方法，将SocketChannel注册到了Selector中，过程与启动流程中的Register过程类似
 ```java
 public final void register(EventLoop eventLoop, final ChannelPromise promise) {
     
@@ -1278,15 +1285,14 @@ protected void doBeginRead() throws Exception {
     }
 }
 ```
-<a name="pEzHa"></a>
-# Read剖析
+## Read剖析
 read事件的处理也是在
 ```java
 if ((readyOps & (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)) != 0 || readyOps == 0) {
 	unsafe.read();
 }
 ```
-分支中，通过unsafe.read()方法处理的，**不过此处调用的方法在AbstractNioByteChannel.NioByteUnsafe类中**
+分支中，通过unsafe.read()方法处理的，不过此处调用的方法在AbstractNioByteChannel.NioByteUnsafe类中
 ```java
 @Override
 public final void read() {
