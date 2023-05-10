@@ -4,16 +4,16 @@ layout: home
 hero:
   name: Fan Xuebin
   text: BLOG
-  tagline: Here are some articles on Java or Python, as well as some development cases.
+  tagline: 这里有着一些关于Java或Python的文章，以及一些开发案例，或许能帮助到你
   image:
     src: /rabbit.jpg
     alt: VitePress
   actions:
     - theme: brand
-      text: Get Started
+      text: 开 始
       link: /blog/jdk_support
     - theme: alt
-      text: View on GitHub
+      text: 前往 Github
       link: https://github.com/fxbsujay
 
 features:
