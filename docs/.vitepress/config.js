@@ -11,7 +11,6 @@ export default defineConfig({
         lineNumbers: false
     },
     cleanUrls: true,
-    base: '/',
     ignoreDeadLinks: true,
     lastUpdated: true,
     head: [
@@ -39,7 +38,7 @@ export default defineConfig({
             { icon: 'github', link: 'https://github.com/fxbsujay' }
         ],
         nav: [
-            { text: '博客', link: '/blog/jdk_support' },
+            { text: '博客', link: '/blog/jdk_support' ,activeMatch:  '/blog/' },
         ],
         sidebar: {
             '/blog': [
