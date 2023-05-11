@@ -10,7 +10,7 @@ export default defineConfig({
         theme: 'dark-plus',
         lineNumbers: false
     },
-    cleanUrls: true,
+    cleanUrls: false,
     ignoreDeadLinks: true,
     lastUpdated: true,
     head: [
@@ -38,7 +38,7 @@ export default defineConfig({
             { icon: 'github', link: 'https://github.com/fxbsujay' }
         ],
         nav: [
-            { text: '博客', link: '/blog/jdk_support' ,activeMatch:  '/blog/' },
+            { text: '博客', link: '/blog/directory' ,activeMatch:  '/blog/' },
         ],
         sidebar: {
             '/blog': [
