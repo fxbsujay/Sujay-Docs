@@ -19,18 +19,18 @@
       </div>
       <div class="meat-type"></div>
     </div>-->
+    <a :href="link">
     <div class="image">
-      <img draggable="false" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/nike.png" class="out">
+      <img draggable="false" :src="src ? src : '/rabbit.jpg'" class="out">
       <div class="overlay" style="opacity: 1; transition: all 0.2s ease 0s;"></div>
-      <div class="cats" style="opacity: 1; transition: all 0.2s ease 0s;">5/12/2023, 12:24:35 AM</div>
-      <div class="title" style="opacity: 1; transition: all 0.2s ease 0s;">JDK 17 新特性一览</div>
+      <div class="cats" style="opacity: 1; transition: all 0.2s ease 0s;">Copyright © 2023-present Fan Xuebin</div>
+      <div class="title" style="opacity: 1; transition: all 0.2s ease 0s;">{{ text }}</div>
       <div class="button" style="opacity: 1; transition: all 0.2s ease 0s;">
-        <a href="https://www.antdv.com/components/config-provider-cn">
           阅览文章
           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/arrowbblakc.png">
-        </a>
       </div>
     </div>
+    </a>
   </div>
 </template>
 <script>
@@ -44,8 +44,18 @@ const props = defineProps({
   text: {
     type: String,
     default: ''
+  },
+  src: {
+    type: String,
+    default: ''
+  },
+  link: {
+    type: String,
+    default: ''
   }
 })
+
+console.log(props)
 
 
 

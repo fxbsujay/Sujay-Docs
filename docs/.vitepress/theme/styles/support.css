@@ -3,9 +3,9 @@
     flex-grow:1;
     flex-basis:auto;
     flex-direction:column;
-    margin-top:0px;
+    margin-top:0;
 }
-.main .feed{
+.main .feed {
     display:flex;
     max-width:100%;
     padding:0 calc((100% - 1200px)/2) 40px;
@@ -17,49 +17,31 @@
     margin-top:-84px;
     transition:margin-top .8s ease-in-out;
 }
+
+.main .feed .feed-display{
+    display:flex;
+    flex-grow:1;
+    flex-shrink:1;
+    position:relative;
+    min-height:320px;
+    margin:20px;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 20px 40px 0 rgba(50,50,50,0.08);
+    flex-direction:column;
+    top:0;
+    transition:ease-in-out;
+    -moz-transition:top .5s;
+    -webkit-transition:top .5s;
+    -o-transition:top .5s;
+}
+
 @media screen and (min-width:600px){
     .main .feed .feed-display{
-        display:flex;
-        flex-grow:1;
-        flex-shrink:1;
         flex-basis:360px;
-        position:relative;
-        min-height:320px;
-        margin:20px;
-        background-color:#FFF;
-        border-radius:10px;
-        overflow:hidden;
-        box-shadow:0 20px 40px 0 rgba(50,50,50,0.08);
-        flex-direction:column;
-        position:relative;
-        top:0px;
-        transition:ease-in-out;
-        -moz-transition:top .5s;
-        -webkit-transition:top .5s;
-        -o-transition:top .5s;
     }
 }
-@media screen and (max-width:600px){
-    .main .feed .feed-display{
-        display:flex;
-        flex-grow:1;
-        flex-shrink:1;
-        position:relative;
-        min-height:320px;
-        margin:20px;
-        background-color:#FFF;
-        border-radius:10px;
-        overflow:hidden;
-        box-shadow:0 20px 40px 0 rgba(50,50,50,0.08);
-        flex-direction:column;
-        position:relative;
-        top:0px;
-        transition:ease-in-out;
-        -moz-transition:top .5s;
-        -webkit-transition:top .5s;
-        -o-transition:top .5s;
-    }
-}
+
 .main .feed .feed-display:hover{
     cursor:pointer;
     top:-15px;
@@ -170,7 +152,7 @@
 .main .feed .feed-display .image .title {
     font-weight: 800;
     color: white;
-    width: 350px;
+    width: 100%;
     font-size: 28px;
     line-height: 35px;
     transform-style: preserve-3d;
@@ -188,7 +170,7 @@
     background: #ffdc25;
     font-weight: 700;
     float: left;
-    padding: 12px 40px 14px 20px;
+    padding: 8px 40px 10px 20px;
     transform-style: preserve-3d;
     position: relative;
     transition: all 0.6s 0.3s;
@@ -197,11 +179,11 @@
 
 
 .main .feed .feed-display .image .button img {
-    background: #ffdc25;
+    background: transparent;
     width: 14px;
     height: auto;
     position: absolute;
     right: 17px;
     left: auto;
-    top: 18px;
+    top: 13px;
 }

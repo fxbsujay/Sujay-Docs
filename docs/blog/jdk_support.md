@@ -1,13 +1,8 @@
 ---
-description: Aaaaaaaaaaaaaaaaa
-head:
-- - meta
-- name: description
-  content: hello
-- - meta
-- name: keywords
-  content: super duper SEO
+description: 对Java JDK 17 新特性的概述
 ---
+
+
 # JDK 17 新特性一览
 
 ## 语言特性

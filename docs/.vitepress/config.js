@@ -49,7 +49,7 @@ export default defineConfig({
                     text: '后端知识库',
                     collapsed: false,
                     items: [
-                        { text: 'JAVA JDK17 新特性', link: '/blog/jdk_support' },
+                        { text: 'JAVA JDK17 新特性', link: '/blog/jdk_support', src: '/bg/jdk17.png' },
                         { text: 'MySql 索引', link: '/blog/mysql_index' },
                         { text: 'Java JUC', link: '/blog/juc'},
                         { text: '消息队列', link: '/blog/mq' },
