@@ -21,5 +21,6 @@ const props = defineProps({
   }
 })
 
+const { sidebarGroups } = props
 console.log(props.sidebarGroups)
 </script>

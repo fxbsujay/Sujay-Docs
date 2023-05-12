@@ -16,6 +16,7 @@ export default defineConfig({
     head: [
         [ 'link', { rel: 'icon', href: '/favicon.ico' }]
     ],
+
     themeConfig: {
         logo: '/favicon.ico',
         siteTitle: 'Fan Xuebin',
@@ -28,7 +29,9 @@ export default defineConfig({
             prev: '上一页',
             next: '下一页'
         },
-        outlineTitle: '在本页',
+        returnToTopLabel: '返回',
+        sidebarMenuLabel: '菜单',
+        outlineTitle: '文章大纲',
         lastUpdatedText: '最近更新时间',
         footer: {
             message: 'Released under the <a href="https://github.com/fxbsujay/Sujay-Docs/blob/main/LICENSE">MIT License</a>.',
