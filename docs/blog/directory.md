@@ -10,6 +10,7 @@ import { useSidebar } from 'vitepress/dist/client/theme-default/composables/side
 
 const page = import('./jdk_support.md')
 
+
 const data = useData()
 page.then( res => {
 console.log(res)
