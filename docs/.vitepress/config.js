@@ -30,8 +30,8 @@ export default defineConfig({
             next: '下一页'
         },
         returnToTopLabel: '返回',
-        sidebarMenuLabel: '菜单',
-        outlineTitle: '文章大纲',
+        sidebarMenuLabel: '目录',
+        outlineTitle: '大纲',
         lastUpdatedText: '最近更新时间',
         footer: {
             message: 'Released under the <a href="https://github.com/fxbsujay/Sujay-Docs/blob/main/LICENSE">MIT License</a>.',
@@ -41,7 +41,7 @@ export default defineConfig({
             { icon: 'github', link: 'https://github.com/fxbsujay' }
         ],
         nav: [
-            { text: '博客', link: '/blog/directory' ,activeMatch:  '/blog/' },
+            { text: '博客', link: '/blog/jdk_support' ,activeMatch:  '/blog/' },
         ],
         sidebar: {
             '/blog': [
