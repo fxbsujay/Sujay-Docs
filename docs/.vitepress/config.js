@@ -35,7 +35,7 @@ export default defineConfig({
         lastUpdatedText: '最近更新时间',
         footer: {
             message: 'Released under the <a href="https://github.com/fxbsujay/Sujay-Docs/blob/main/LICENSE">MIT License</a>.',
-            copyright: 'Copyright © 2020-present <a href="https://github.com/fxbsujay">Fan XueBin</a>'
+            copyright: 'Copyright © 2020-present <a href="https://github.com/fxbsujay">Fan XueBin</a> <a href="https://beian.miit.gov.cn/">鲁ICP备2022006050号-1</a>'
         },
         socialLinks: [
             { icon: 'github', link: 'https://github.com/fxbsujay' }
