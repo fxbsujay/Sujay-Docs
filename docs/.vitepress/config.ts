@@ -1,4 +1,4 @@
-import { defineConfig,MarkdownOptions  } from 'vitepress'
+import { defineConfig  } from 'vitepress'
 
 
 export default defineConfig({
@@ -16,7 +16,6 @@ export default defineConfig({
     head: [
         [ 'link', { rel: 'icon', href: '/favicon.ico' }]
     ],
-
     themeConfig: {
         logo: '/favicon.ico',
         siteTitle: 'Fan Xuebin',
@@ -51,6 +50,7 @@ export default defineConfig({
                     items: [
                         { text: 'JAVA JDK17 新特性', link: '/blog/jdk_support', src: '/bg/jdk17.png' },
                         { text: 'Redis', link: '/blog/redis' },
+                        { text: 'MySql', link: '/blog/mysql' },
                         { text: 'MySql 索引', link: '/blog/mysql_index' },
                         { text: 'Java JUC', link: '/blog/juc'},
                         { text: '消息队列', link: '/blog/mq' },

@@ -1,7 +1,20 @@
+:root {
+    --vp-c-brand: #646cff;
+    --vp-c-brand-light: #747bff;
+    --vp-c-mute: #eeeef0;
+    --vp-c-text-code: #476582;
+}
+
 .custom-block.line {
     padding-top: 8px
 }
 
-img, video {
+.main img, .main video {
     margin: auto;
+}
+
+.main table {
+    display: table;
+    margin: auto;
+    text-align: center;
 }
