@@ -7,7 +7,7 @@ export default defineConfig({
     description: 'Sujay Blog.',
     lang: 'en-US',
     markdown: {
-        theme: 'dark-plus',
+        theme: 'slack-ochin',
         lineNumbers: false
     },
     cleanUrls: false,
@@ -50,6 +50,7 @@ export default defineConfig({
                     items: [
                         { text: 'JAVA JDK17 新特性', link: '/blog/jdk_support', src: '/bg/jdk17.png' },
                         { text: 'Redis', link: '/blog/redis' },
+                        { text: 'Docker', link: '/blog/docker' },
                         { text: 'MySql', link: '/blog/mysql' },
                         { text: 'MySql 索引', link: '/blog/mysql_index' },
                         { text: 'Java JUC', link: '/blog/juc'},
