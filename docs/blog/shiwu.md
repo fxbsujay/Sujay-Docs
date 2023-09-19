@@ -237,7 +237,22 @@ TCC 分为两个阶段：
 
 ![image.png](/doc/shiwu/事务14.png)
 
-## Seata的实现
+## Seata
+
+> [新手文档](https://seata.io/zh-cn/docs/ops/deploy-guide-beginner) [使用示例](https://github.com/seata/seata-samples/blob/master/springcloud-nacos-seata/README.md) [下载链接](https://github.com/seata/seata/releases)
+
+### TC/TM/RM三大组件
+
+分布式事务的执行流程
+
+- TM开启分布式事务(TM向TC注册全局事务记录)
+- 换业务场景，编排数据库，服务等事务内资源（RM向TC汇报资源准备状态）
+- TM结束分布式事务，事务一阶段结束（TM通知TC提交/回滚分布式事务）
+- TC汇总事务信息，决定分布式事务是提交还是回滚
+- TC通知所有RM提交/回滚资源，事务二阶段结束
+
+![image.png](/doc/shiwu/seata1.png)
+
 
 ### AT模式
 
@@ -316,418 +331,65 @@ AT 的 一阶段直接就把事务提交了，直接释放了本地锁，这么�
 
 所以说这点在编码的时候还是得注意下的
 
-## [Seata](http://seata.io/zh-cn/) 的使用说明
-
-### TC/TM/RM三大组件
-
-分布式事务的执行流程
-
-- TM开启分布式事务(TM向TC注册全局事务记录)
-- 换业务场景，编排数据库，服务等事务内资源（RM向TC汇报资源准备状态）
-- TM结束分布式事务，事务一阶段结束（TM通知TC提交/回滚分布式事务）
-- TC汇总事务信息，决定分布式事务是提交还是回滚
-- TC通知所有RM提交/回滚资源，事务二阶段结束
-
-![image.png](/doc/shiwu/seata1.png)
-
-### 配置文件
-
-```nginx
-registry {
-  # file 、nacos 、eureka、redis、zk、consul、etcd3、sofa
-  type = "file"
-  nacos {
-    application = "seata-server"
-    serverAddr = "127.0.0.1:8848"
-    group = "SEATA_GROUP"
-    namespace = ""
-    cluster = "default"
-    username = ""
-    password = ""
-  }
-  file {
-    name = "file.conf"
-  }
-}
-
-config {
-  # file、nacos 、apollo、zk、consul、etcd3
-  type = "file"
-
-  nacos {
-    serverAddr = "127.0.0.1:8848"
-    namespace = ""
-    group = "SEATA_GROUP"
-    username = ""
-    password = ""
-    dataId = "seataServer.properties"
-  }
-  file {
-    name = "file.conf"
-  }
-}
-
+### 简单的使用示例
+pom依赖
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+        <exclusions>
+            <exclusion>
+                <groupId>io.seata</groupId>
+                <artifactId>seata-spring-boot-starter</artifactId>
+            </exclusion>
+        </exclusions>
+        <version>2021.0.4.0</version>
+    </dependency>
+    <dependency>
+        <groupId>io.seata</groupId>
+        <artifactId>seata-spring-boot-starter</artifactId>
+        <version>1.5.2</version>
+    </dependency>
+</dependencies>
 ```
-```nginx
-## transaction log store, only used in seata-server
-store {
-  ## store mode: file、db、redis
-  mode = "file"
-  ## rsa decryption public key
-  publicKey = ""
-  ## file store property
-  file {
-    ## store location dir
-    dir = "sessionStore"
-    # branch session size , if exceeded first try compress lockkey, still exceeded throws exceptions
-    maxBranchSessionSize = 16384
-    # globe session size , if exceeded throws exceptions
-    maxGlobalSessionSize = 512
-    # file buffer size , if exceeded allocate new buffer
-    fileWriteBufferCacheSize = 16384
-    # when recover batch read size
-    sessionReloadReadSize = 100
-    # async, sync
-    flushDiskMode = async
-  }
-
-  ## database store property
-  db {
-    ## the implement of javax.sql.DataSource, such as DruidDataSource(druid)/BasicDataSource(dbcp)/HikariDataSource(hikari) etc.
-    datasource = "druid"
-    ## mysql/oracle/postgresql/h2/oceanbase etc.
-    dbType = "mysql"
-    driverClassName = "com.mysql.jdbc.Driver"
-    ## if using mysql to store the data, recommend add rewriteBatchedStatements=true in jdbc connection param
-    url = "jdbc:mysql://127.0.0.1:3306/seata?rewriteBatchedStatements=true"
-    user = "mysql"
-    password = "mysql"
-    minConn = 5
-    maxConn = 100
-    globalTable = "global_table"
-    branchTable = "branch_table"
-    lockTable = "lock_table"
-    queryLimit = 100
-    maxWait = 5000
-  }
-
-  ## redis store property
-  redis {
-    ## redis mode: single、sentinel
-    mode = "single"
-    ## single mode property
-    single {
-      host = "127.0.0.1"
-      port = "6379"
-    }
-    ## sentinel mode property
-    sentinel {
-      masterName = ""
-      ## such as "10.28.235.65:26379,10.28.235.65:26380,10.28.235.65:26381"
-      sentinelHosts = ""
-    }
-    password = ""
-    database = "0"
-    minConn = 1
-    maxConn = 10
-    maxTotal = 100
-    queryLimit = 100
-  }
-}
-
-```
-```nginx
-registry {
-  type = "nacos"
-
-  nacos {
-    application = "seata-server"
-    serverAddr = "localhost:8848"
-    group = "SEATA_GROUP"
-    namespace = "4388013f-6618-4de0-bb88-8bf280069254"
-    cluster = "default"
-    username = "nacos"
-    password = "nacos"
-  }
-}#   
-#   
-config {
- 
-  type = "nacos"
-  nacos {
-    serverAddr = "localhost:8848"
-    namespace = "4388013f-6618-4de0-bb88-8bf280069254"
-    group = "SEATA_GROUP"
-    username = "nacos"
-    password = "nacos"
-    dataId = "seataServer.properties"
-  }
-}
-
-```
-![image.png](/doc/shiwu/seata2.png)
-```properties
-transport.type=TCP
-transport.server=NIO
-transport.heartbeat=true
-transport.enableClientBatchSendRequest=true
-transport.threadFactory.bossThreadPrefix=NettyBoss
-transport.threadFactory.workerThreadPrefix=NettyServerNIOWorker
-transport.threadFactory.serverExecutorThreadPrefix=NettyServerBizHandler
-transport.threadFactory.shareBossWorker=false
-transport.threadFactory.clientSelectorThreadPrefix=NettyClientSelector
-transport.threadFactory.clientSelectorThreadSize=1
-transport.threadFactory.clientWorkerThreadPrefix=NettyClientWorkerThread
-transport.threadFactory.bossThreadSize=1
-transport.threadFactory.workerThreadSize=default
-transport.shutdown.wait=3
-transport.serialization=seata
-transport.compressor=none
-
-# store
-#model改为db
-store.mode=db
-store.lock.mode=file
-store.session.mode=file
-# store.publicKey=""
-store.file.dir=file_store/data
-store.file.maxBranchSessionSize=16384
-store.file.maxGlobalSessionSize=512
-store.file.fileWriteBufferCacheSize=16384
-store.file.flushDiskMode=async
-store.file.sessionReloadReadSize=100
-store.db.datasource=druid
-store.db.dbType=mysql
-#修改数据驱动，这里是mysql8，使用mysql5的话请修改
-store.db.driverClassName=com.mysql.cj.jdbc.Driver
-# 改为上面创建的seata服务数据库
-store.db.url=jdbc:mysql://127.0.0.1:3306/seata?rewriteBatchedStatements=true&serverTimezone=UTC
-# 改为自己的数据库用户名
-store.db.user=root
-# 改为自己的数据库密码
-store.db.password=123456
-store.db.minConn=5
-store.db.maxConn=30
-store.db.globalTable=global_table
-store.db.branchTable=branch_table
-store.db.distributedLockTable=distributed_lock
-store.db.queryLimit=100
-store.db.lockTable=lock_table
-store.db.maxWait=5000
-# log
-log.exceptionRate=100
-# metrics
-metrics.enabled=false
-metrics.registryType=compact
-metrics.exporterList=prometheus
-metrics.exporterPrometheusPort=9898
-# service
-# 自己命名一个vgroupMapping
-service.vgroupMapping.fsp_tx_group=default
-service.default.grouplist=127.0.0.1:8091
-service.enableDegrade=false
-service.disableGlobalTransaction=false
-# client
-client.rm.asyncCommitBufferLimit=10000
-client.rm.lock.retryInterval=10
-client.rm.lock.retryTimes=30
-client.rm.lock.retryPolicyBranchRollbackOnConflict=true
-client.rm.reportRetryCount=5
-client.rm.tableMetaCheckEnable=false
-client.rm.tableMetaCheckerInterval=60000
-client.rm.sqlParserType=druid
-client.rm.reportSuccessEnable=false
-client.rm.sagaBranchRegisterEnable=false
-client.rm.tccActionInterceptorOrder=-2147482648
-client.tm.commitRetryCount=5
-client.tm.rollbackRetryCount=5
-client.tm.defaultGlobalTransactionTimeout=60000
-client.tm.degradeCheck=false
-client.tm.degradeCheckAllowTimes=10
-client.tm.degradeCheckPeriod=2000
-client.tm.interceptorOrder=-2147482648
-client.undo.dataValidation=true
-client.undo.logSerialization=jackson
-client.undo.onlyCareUpdateColumns=true
-client.undo.logTable=undo_log
-client.undo.compress.enable=true
-client.undo.compress.type=zip
-client.undo.compress.threshold=64k
-```
-
-### 执行SQL进行持久化
-![image.png](/doc/shiwu/seata3.png)
-```sql
--- for AT mode you must to init this sql for you business database. the seata server not need it.
-CREATE TABLE IF NOT EXISTS `undo_log`
-(
-    `branch_id`     BIGINT       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11)      NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6)  NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6)  NOT NULL COMMENT 'modify datetime',
-    UNIQUE KEY `ux_undo_log` (`xid`, `branch_id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-  DEFAULT CHARSET = utf8mb4 COMMENT ='AT transaction mode undo table';
--- -------------------------------- The script used when storeMode is 'db' --------------------------------
--- the table to store GlobalSession data
-CREATE TABLE IF NOT EXISTS `global_table`
-(
-    `xid`                       VARCHAR(128) NOT NULL,
-    `transaction_id`            BIGINT,
-    `status`                    TINYINT      NOT NULL,
-    `application_id`            VARCHAR(32),
-    `transaction_service_group` VARCHAR(32),
-    `transaction_name`          VARCHAR(128),
-    `timeout`                   INT,
-    `begin_time`                BIGINT,
-    `application_data`          VARCHAR(2000),
-    `gmt_create`                DATETIME,
-    `gmt_modified`              DATETIME,
-    PRIMARY KEY (`xid`),
-    KEY `idx_status_gmt_modified` (`status` , `gmt_modified`),
-    KEY `idx_transaction_id` (`transaction_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- the table to store BranchSession data
-CREATE TABLE IF NOT EXISTS `branch_table`
-(
-    `branch_id`         BIGINT       NOT NULL,
-    `xid`               VARCHAR(128) NOT NULL,
-    `transaction_id`    BIGINT,
-    `resource_group_id` VARCHAR(32),
-    `resource_id`       VARCHAR(256),
-    `branch_type`       VARCHAR(8),
-    `status`            TINYINT,
-    `client_id`         VARCHAR(64),
-    `application_data`  VARCHAR(2000),
-    `gmt_create`        DATETIME(6),
-    `gmt_modified`      DATETIME(6),
-    PRIMARY KEY (`branch_id`),
-    KEY `idx_xid` (`xid`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- the table to store lock data
-CREATE TABLE IF NOT EXISTS `lock_table`
-(
-    `row_key`        VARCHAR(128) NOT NULL,
-    `xid`            VARCHAR(128),
-    `transaction_id` BIGINT,
-    `branch_id`      BIGINT       NOT NULL,
-    `resource_id`    VARCHAR(256),
-    `table_name`     VARCHAR(32),
-    `pk`             VARCHAR(36),
-    `status`         TINYINT      NOT NULL DEFAULT '0' COMMENT '0:locked ,1:rollbacking',
-    `gmt_create`     DATETIME,
-    `gmt_modified`   DATETIME,
-    PRIMARY KEY (`row_key`),
-    KEY `idx_status` (`status`),
-    KEY `idx_branch_id` (`branch_id`),
-    KEY `idx_xid_and_branch_id` (`xid` , `branch_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `distributed_lock`
-(
-    `lock_key`       CHAR(20) NOT NULL,
-    `lock_value`     VARCHAR(20) NOT NULL,
-    `expire`         BIGINT,
-    primary key (`lock_key`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
-INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('AsyncCommitting', ' ', 0);
-INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('RetryCommitting', ' ', 0);
-INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('RetryRollbacking', ' ', 0);
-INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('TxTimeoutCheck', ' ', 0);
-```
-
-### YML 配置
+客户端配置
 ```yaml
 seata:
-  #事务群组（可以每个应用独立取名，也可以使用相同的名字），要与服务端nacos-config.txt中service.vgroup_mapping中存在,并且要保证多个群组情况下后缀名要保持一致-tx_group
-  enabled: true
-  enable-auto-data-source-proxy: true #是否开启数据源自动代理,默认为true
-  tx-service-group: fsp_tx_group  #要与配置文件中的vgroupMapping一致
-  application-id: seata-server
-  registry:  #registry根据seata服务端的registry配置
-    type: nacos #默认为file
+  enabled: true # 是否开启spring-boot自动装配
+  enable-auto-data-source-proxy: true # 是否开启数据源自动代理
+  tx-service-group: my_tx_group # 该服务事务分组名称
+  registry:
+    type: nacos
     nacos:
-      application: seata-server #配置自己的seata服务
-      server-addr: ${spring.cloud.nacos.discovery.server-addr} #根据自己的seata服务配置
-      username: nacos #根据自己的seata服务配置
-      password: nacos #根据自己的seata服务配置
-      cluster: default # 配置自己的seata服务cluster, 默认为 default
-      group: SEATA_GROUP #根据自己的seata服务配置
-      namespace: 4388013f-6618-4de0-bb88-8bf280069254
-  config:
-    type: nacos #默认file,如果使用file不配置下面的nacos,直接配置seata.service
-    nacos:
-      server-addr: ${spring.cloud.nacos.discovery.server-addr} #配置自己的nacos地址
-      group: SEATA_GROUP #配置自己的dev
-      username: nacos #配置自己的username
-      password: nacos #配置自己的password
-      dataId: seataServer.properties # #配置自己的dataId,由于搭建服务端时把客户端的配置也写在了seataServer.properties,所以这里用了和服务端一样的配置文件,实际客户端和服务端的配置文件分离出来更好
-      namespace: 4388013f-6618-4de0-bb88-8bf280069254
+      application: seata-server
+      server-addr: localhost:8848
+      username: nacos
+      password: nacos
+  service:
+    vgroup-mapping:
+      my_tx_group: default # 该服务所在事务分组所对应的seata服务端集群名称
+
+logging:
+  level:
+    io:
+      seata: debug
 ```
+
 ```java
-@Service
-@Slf4j
-public class OrderServiceImpl implements OrderService {
+
+@Resource
+private OrderDao orderDao;
+
+@GlobalTransactional(name = "fsp_order_insert",rollbackFor = Exception.class)
+public void insert(Order order) {
+        
+    // 创建订单
+    orderDao.insert(order);
     
-    @Resource
-    private OrderDao orderDao;
-    
-    @Autowired
-    private StorageService storageService;
-    
-    @Autowired
-    private AccountService accountService;
-    
-    @Override
-    @GlobalTransactional(name = "fsp_order_insert",rollbackFor = Exception.class)
-    public void insert(Order order) {
-        
-        log.info("----------> 新建订单");
-        orderDao.insert(order);
-        
-        log.info("----------> 订单微服务开始调用库存服务，做扣减");
-        storageService.decrease(order.getProductId(),order.getCount());
-        
-        log.info("----------> 订单微服务开始调用账户，做扣减");
-        accountService.decrease(order.getUserId(),order.getMoney());
-        
-        log.info("----------> 修改订单状态 0 -> 1");
-        orderDao.update(order.getUserId(),0);
-        
-        log.info("----------> 订单结束");
-    }
-    
-    @Override
-    public void update(Order order) {
-        
-    }
+    // 模拟异常
+    System.out.println(2 / 0);    
+
+    orderDao.update(order.id(),1);
 }
-
-@Component
-@FeignClient(name = "seata-account-service")
-public interface AccountService {
-
-    @PostMapping("/account/decrease")
-    Result<Boolean> decrease(@RequestParam("userId") Long userId, @RequestParam("money") BigDecimal money);
-}
-
-@Component
-@FeignClient(name = "seata-storage-service")
-public interface StorageService {
-
-    @PostMapping("/storage/decrease")
-    Result<Boolean> decrease(@RequestParam("productId") Long productId,@RequestParam("count") Integer count);
-}
-
 ```
