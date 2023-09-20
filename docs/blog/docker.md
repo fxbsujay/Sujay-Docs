@@ -268,7 +268,7 @@ COPY
 类似于ADD，拷贝文件和目录到镜像中
 
 ```sh
-COPY test.txt /mydir/
+COPY overview.md.txt /mydir/
 ```
 
 

@@ -1,13 +1,11 @@
 <template>
   <div style="padding: 0 calc((100% - 1200px)/2) " class="vp-doc">
-    <h1 style="margin: 20px" id="jdk-17-新特性一览" tabindex="-1">
-      文章目录 🎉
+    <h1 style="margin: 20px">
+      组件总览 🎉
     </h1>
   </div>
-  <div class="main">
-    <div class="feed">
-      <DirectoryItem v-for="item in sidebarGroups" v-bind="item"/>
-    </div>
+  <div class="overview-components">
+<!--    <ComponentCard />-->
   </div>
 </template>
 <script >
@@ -17,13 +15,13 @@ export default {
 </script>
 
 <script setup>
-import DirectoryItem from './component/DirectoryItem.vue'
+import ComponentCard from './component/ComponentCard.vue'
 import { ref, toRef } from 'vue'
 import { useData, useRoute } from 'vitepress'
-import { useSidebar } from 'vitepress/dist/client/theme-default/composables/sidebar'
+import { useSidebar } from 'vitepress/theme'
 
 const data = useData()
-
+const route = useRoute()
 const { sidebar } = useSidebar()
 const sidebarGroups = ref([])
 for (let item in sidebar.value) {

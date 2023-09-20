@@ -19,7 +19,13 @@ export default defineConfig({
     themeConfig: {
         logo: '/favicon.ico',
         siteTitle: 'Fan Xuebin',
-        outline: 'deep',
+        outline: {
+            level: 'deep',
+            label: '大纲'
+        },
+        lastUpdated: {
+            text: '最近更新时间'
+        },
         editLink: {
             pattern: 'https://github.com/fxbsujay/Sujay-Docs/blob/main/docs/:path',
             text: '在 GitHub 上编辑此页面'
@@ -30,8 +36,6 @@ export default defineConfig({
         },
         returnToTopLabel: '返回',
         sidebarMenuLabel: '目录',
-        outlineTitle: '大纲',
-        lastUpdatedText: '最近更新时间',
         footer: {
             message: 'Released under the <a href="https://github.com/fxbsujay/Sujay-Docs/blob/main/LICENSE">MIT License</a>.',
             copyright: 'Copyright © 2020-present <a href="https://github.com/fxbsujay">Fan XueBin</a> <a href="https://beian.miit.gov.cn/">鲁ICP备2022006050号-1</a>'
@@ -41,6 +45,7 @@ export default defineConfig({
         ],
         nav: [
             { text: '博客', link: '/blog/jdk_support' ,activeMatch:  '/blog/' },
+            { text: 'UI组件库', link: '/components/overview' ,activeMatch:  '/components/' },
         ],
         sidebar: {
             '/blog': [
@@ -75,6 +80,19 @@ export default defineConfig({
                     items: [
                         { text: '使用 Hexo 搭建一个博客', link: '/blog/hexo' },
                         { text: '示例', link: '/blog/text' }
+                    ]
+                }
+            ],
+            '/components': [
+                {
+                    text: '组件总览',
+                    link: '/components/overview'
+                },
+                {
+                    text: '基础组件',
+                    collapsed: false,
+                    items: [
+                        { text: '按钮', link: '/components/button' }
                     ]
                 }
             ]
