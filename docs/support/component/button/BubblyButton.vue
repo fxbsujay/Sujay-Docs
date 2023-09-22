@@ -1,6 +1,6 @@
 <template>
-  <div class="component-box">
-    <button class="bubbly-button">一个会冒泡的按钮</button>
+  <div class="bubbly-button-box">
+    <button class="bubbly-button">冒泡按钮</button>
   </div>
 </template>
 
@@ -36,11 +36,17 @@ nextTick(() => {
 </script>
 <style scoped>
 
+.bubbly-button-box {
+  display: inline-block;
+  margin-right: 24px;
+  margin-top: 20px;
+}
 .bubbly-button {
   font-family: "Helvetica", "Arial", sans-serif;
   display: inline-block;
   font-size: 1em;
-  padding: 1em 2em;
+  width: 130px;
+  height: 40px;
   -webkit-appearance: none;
   appearance: none;
   background-color: #ff0081;

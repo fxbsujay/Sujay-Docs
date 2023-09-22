@@ -4,6 +4,15 @@ aside: false
 ---
 
 <script setup>
-import BubblyButtons from '../support/component/button/BubblyButtons.vue';
+import BubblyButton from '../support/component/button/BubblyButton.vue';
+import BasicsAnimationButtons from '../support/component/button/BasicsAnimationButtons.vue';
+import HoverContinueButton from '../support/component/button/HoverContinueButton.vue';
+import HoverEffectsButtons from '../support/component/button/HoverEffectsButtons.vue';
 </script>
-<BubblyButtons />
+<div class="component-box">
+<HoverContinueButton />
+<BubblyButton />
+<HoverEffectsButtons />
+</div>
+
+<BasicsAnimationButtons />
