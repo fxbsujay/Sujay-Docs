@@ -87,3 +87,11 @@
     position: relative;
     width: 100%;
 }
+
+.component-item {
+    width: 280px;
+    display: inline-block;
+    margin-right: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}

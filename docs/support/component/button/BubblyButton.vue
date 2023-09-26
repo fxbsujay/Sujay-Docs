@@ -36,17 +36,12 @@ nextTick(() => {
 </script>
 <style scoped>
 
-.bubbly-button-box {
-  display: inline-block;
-  margin-right: 24px;
-  margin-top: 20px;
-}
 .bubbly-button {
   font-family: "Helvetica", "Arial", sans-serif;
   display: inline-block;
   font-size: 1em;
   width: 130px;
-  height: 40px;
+  height: 50px;
   -webkit-appearance: none;
   appearance: none;
   background-color: #ff0081;

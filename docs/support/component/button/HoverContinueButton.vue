@@ -4,17 +4,12 @@
     <span class="circle" aria-hidden="true">
       <span class="icon arrow"></span>
     </span>
-      <span class="button-text">鼠标悬停展开</span>
+      <span class="button-text">悬停展开</span>
     </button>
   </div>
 </template>
 
 <style scoped>
-.hover-continue-button {
-  display: inline-block;
-  margin-right: 24px;
-  margin-top: 20px;
-}
 button {
   position: relative;
   display: inline-block;
@@ -29,16 +24,16 @@ button {
   font-family: inherit;
 }
 button.learn-more {
-  width: 12rem;
-  height: auto;
+  width: 180px;
+  height: 50px;
 }
 button.learn-more .circle {
   transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
   position: relative;
   display: block;
   margin: 0;
-  width: 3rem;
-  height: 3rem;
+  width: 50px;
+  height: 50px;
   background: #282936;
   border-radius: 1.625rem;
 }
@@ -75,7 +70,7 @@ button.learn-more .button-text {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 0.75rem 0;
+  padding: 13px 0;
   margin: 0 0 0 1.85rem;
   color: #282936;
   font-weight: 700;

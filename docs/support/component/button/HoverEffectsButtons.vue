@@ -9,17 +9,17 @@ nextTick(() => {
 </script>
 
 <template>
-  <div class="effects-button">Button</div>
+  <div>
+    <div class="effects-button">悬停跳动按钮</div>
+  </div>
 </template>
 
 <style>
 
 .effects-button {
   display: inline-block;
-  width: 120px;
-  margin-right: 24px;
-  margin-top: 20px;
-  padding: 16px 32px;
+  height: 50px;
+  padding: 16px 36px;
   font-weight: 500;
   line-height: 16px;
   border-radius: 24px;
