@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <div class="list-container">
@@ -13,33 +12,13 @@
   </div>
 </template>
 
-<script setup>
-import { nextTick } from 'vue'
-nextTick(() => {
-  document.querySelector('.more-button').addEventListener('click', function () {
-    document.querySelector('.list-container').classList.toggle('active')
-  })
-})
-</script>
 <style scoped>
 .list-container {
   position: relative;
 }
-.list-container.active .more-button {
-  animation: onePulse 0.6s forwards linear;
-}
-.list-container.active .menu-icon-wrapper {
-  transform: rotate(-45deg);
-}
-.list-container.active .menu-icon-line.first {
-  transform: rotate(-90deg) translateX(1px);
-}
-.list-container.active .menu-icon-line.last {
-  transform: rotate(-90deg) translateX(-1px);
-}
 .more-button {
   background-color: #5c67ff;
-  box-shadow: 0px 0px 0px 4px rgba(92, 103, 255, 0.3);
+  box-shadow: 0 0 0 4px rgba(92, 103, 255, 0.3);
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -51,22 +30,41 @@ nextTick(() => {
   position: relative;
   z-index: 2;
 }
+
 .more-button:hover, .more-button:focus {
-  box-shadow: 0px 0px 0px 8px rgba(92, 103, 255, 0.3);
+  box-shadow: 0 0 0 8px rgba(92, 103, 255, 0.3);
   background-color: #4854ff;
 }
+
+.more-button:hover .more-button {
+  animation: onePulse 0.6s forwards linear;
+}
+
+.more-button:hover .menu-icon-wrapper {
+  transform: rotate(-45deg);
+}
+
+.more-button:hover .menu-icon-line.first {
+  transform: rotate(-90deg) translateX(1px);
+}
+
+.more-button:hover .menu-icon-line.last {
+  transform: rotate(-90deg) translateX(-1px);
+}
+
+
 .more-button:focus {
   outline: 0;
 }
 @keyframes onePulse {
   0% {
-    box-shadow: 0px 0px 0px 0px rgba(92, 103, 255, 0.3);
+    box-shadow: 0 0 0 0 rgba(92, 103, 255, 0.3);
   }
   50% {
-    box-shadow: 0px 0px 0px 12px rgba(92, 103, 255, 0.1);
+    box-shadow: 0 0 0 12px rgba(92, 103, 255, 0.1);
   }
   100% {
-    box-shadow: 0px 0px 0px 4px rgba(92, 103, 255, 0.3);
+    box-shadow: 0 0 0 4px rgba(92, 103, 255, 0.3);
   }
 }
 @keyframes fadeInItem {
