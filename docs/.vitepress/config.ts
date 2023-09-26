@@ -45,7 +45,7 @@ export default defineConfig({
         ],
         nav: [
             { text: '博客', link: '/blog/jdk_support' ,activeMatch:  '/blog/' },
-            { text: 'UI组件库', link: '/components/overview' ,activeMatch:  '/components/' },
+            { text: 'UI组件库', link: '/components/button' ,activeMatch:  '/components/' },
         ],
         sidebar: {
             '/blog': [
@@ -84,10 +84,10 @@ export default defineConfig({
                 }
             ],
             '/components': [
-                {
+                /*{
                     text: '组件总览',
                     link: '/components/overview'
-                },
+                },*/
                 {
                     text: '基础组件',
                     collapsed: false,

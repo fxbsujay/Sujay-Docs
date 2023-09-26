@@ -5,7 +5,7 @@
     </h1>
   </div>
   <div class="overview-components">
-<!--    <ComponentCard />-->
+    <ComponentCard /><ComponentCard /><ComponentCard />
   </div>
 </template>
 <script >

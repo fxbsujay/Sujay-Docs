@@ -24,6 +24,7 @@ const animateButton = function(e) {
 };
 
 nextTick(() => {
+
   const bubblyButtons = document.getElementsByClassName("bubbly-button");
   if (bubblyButtons.length >= 1) {
     bubblyButtons[0].addEventListener('click', buttonClickHandle, false);
