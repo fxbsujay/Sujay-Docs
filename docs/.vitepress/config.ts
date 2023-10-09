@@ -71,7 +71,7 @@ export default defineConfig({
                     text: '前端知识库',
                     collapsed: false,
                     items: [
-                        { text: 'css', link: '/blog/css' },
+                        { text: 'css选择器', link: '/blog/css' },
                         { text: 'Vue3 快速上手', link: '/blog/vue' },
                     ]
                 },
