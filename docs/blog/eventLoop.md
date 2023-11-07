@@ -69,7 +69,7 @@ JS是一门单线程的语言，这是因为它运行在浏览器的渲染主线
 <script>
     var h1 = document.querySelector('h1')
     var btn = document.querySelector('button')
-    
+
     // 死循环指定时间
     function delay(duration) {
         var start = Date.now();

@@ -54,6 +54,7 @@ export default defineConfig({
                     collapsed: false,
                     items: [
                         { text: 'JAVA JDK17 新特性', link: '/blog/jdk_support' },
+                        { text: '位运算', link: '/blog/bit_operation' },
                         { text: 'Redis', link: '/blog/redis' },
                         { text: 'Docker', link: '/blog/docker' },
                         { text: 'MySql', link: '/blog/mysql' },
