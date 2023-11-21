@@ -6,10 +6,6 @@ export default defineConfig({
     titleTemplate: ':title - Sujay',
     description: 'Sujay Blog.',
     lang: 'en-US',
-    markdown: {
-        theme: 'slack-ochin',
-        lineNumbers: false
-    },
     cleanUrls: false,
     ignoreDeadLinks: true,
     lastUpdated: true,
