@@ -332,6 +332,7 @@ AT 的 一阶段直接就把事务提交了，直接释放了本地锁，这么�
 所以说这点在编码的时候还是得注意下的
 
 ### 简单的使用示例
+
 pom依赖
 ```xml
 <dependencies>
@@ -376,6 +377,10 @@ logging:
       seata: debug
 ```
 
+
+
+#### AT
+
 ```java
 
 @Resource
@@ -393,3 +398,38 @@ public void insert(Order order) {
     orderDao.update(order.id(),1);
 }
 ```
+
+#### TCC
+
+```java
+@Component
+@Slf4j
+public class OrderTccActionImpl implements OrderTccAction {
+
+    @Autowired
+    private OrderService orderService;
+
+    @Override
+    public void execute(Order order, Integer id) {
+        orderService.save(order);
+        log.info("execute---------------------{}", id);
+    }
+
+    @Override
+    public boolean commit(BusinessActionContext businessActionContext) {
+        Integer id = (Integer)businessActionContext.getActionContext("id");
+        log.info("commit---------------------{}", id);
+        return true;
+    }
+
+    @Override
+    public boolean cancel(BusinessActionContext businessActionContext) {
+        Integer id = (Integer)businessActionContext.getActionContext("id");
+        orderService.remove(id);
+        log.info("cancel---------------------{}", id);
+        return true;
+    }
+}
+
+```
+
