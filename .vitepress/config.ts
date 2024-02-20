@@ -46,27 +46,33 @@ export default defineConfig({
         sidebar: {
             '/blog': [
                 {
-                    text: '后端知识库',
+                    text: 'java 基础',
                     collapsed: false,
                     items: [
-                        { text: 'JAVA JDK17 新特性', link: '/blog/jdk_support' },
+                        { text: 'JDK 新特性', link: '/blog/jdk_support' },
                         { text: '位运算', link: '/blog/bit_operation' },
                         { text: 'Redis', link: '/blog/redis' },
                         { text: 'Docker', link: '/blog/docker' },
                         { text: 'MySql', link: '/blog/mysql' },
                         { text: 'MySql 索引', link: '/blog/mysql_index' },
                         { text: 'Java JUC', link: '/blog/juc'},
+                        { text: '雪花算法', link: '/blog/snow-flake' },
+                        { text: 'Map的实现', link: '/blog/mymap' },
+                    ]
+                },
+                {
+                    text: 'java 进阶',
+                    collapsed: true,
+                    items: [
                         { text: '消息队列', link: '/blog/mq' },
                         { text: 'ELK 学习文档', link: '/blog/elk' },
                         { text: 'Netty 源码分析', link: '/blog/netty' },
-                        { text: '雪花算法', link: '/blog/snow-flake' },
-                        { text: '实现一个简易Map', link: '/blog/mymap' },
                         { text: 'Seata 分布式事务', link: '/blog/shiwu' }
                     ]
                 },
                 {
                     text: '前端知识库',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                         { text: 'css选择器', link: '/blog/css' },
                         { text: '事件循环', link: '/blog/eventLoop' },
@@ -75,7 +81,7 @@ export default defineConfig({
                 },
                 {
                     text: '生活小工具',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                         { text: '使用 Hexo 搭建一个博客', link: '/blog/hexo' },
                         { text: '示例', link: '/blog/text' }
