@@ -9,9 +9,7 @@ export default defineConfig({
     cleanUrls: false,
     ignoreDeadLinks: true,
     lastUpdated: true,
-    head: [
-        [ 'link', { rel: 'icon', href: '/favicon.ico' }]
-    ],
+    head: [[ 'link', { rel: 'icon', href: '/favicon.ico' }]],
     themeConfig: {
         logo: '/favicon.ico',
         siteTitle: 'Fan Xuebin',
@@ -65,9 +63,10 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { text: '消息队列', link: '/blog/mq' },
-                        { text: 'ELK 学习文档', link: '/blog/elk' },
-                        { text: 'Netty 源码分析', link: '/blog/netty' },
-                        { text: 'Seata 分布式事务', link: '/blog/shiwu' }
+                        { text: 'ELK', link: '/blog/elk' },
+                        { text: 'Netty', link: '/blog/netty' },
+                        { text: '分布式事务', link: '/blog/shiwu' },
+                        { text: 'Gateway', link: '/blog/gateway' }
                     ]
                 },
                 {

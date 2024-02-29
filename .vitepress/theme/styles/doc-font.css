@@ -16,7 +16,3 @@
 .main table {
     text-align: center;
 }
-
-.VPNavBar.has-sidebar .container {
-    background-color: var(--vp-nav-bg-color);
-}

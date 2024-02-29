@@ -5,9 +5,7 @@
 
 > 分布式、RESTFUL 风格的搜索和分析引擎 [下载连接](https://www.elastic.co/cn/downloads/past-releases/elasticsearch-7-8-0) [官方文档](https://www.elastic.co/guide/index.html) [postman](https://www.postman.com/downloads/)
 
-> 
->
-> :::details 什么是全文搜索引擎 ？
+:::details 什么是全文搜索引擎 ？
 Google，百度类的网站搜索，它们都是根据网页中的关键字生成索引，我们在搜索的时候输入关键字，它们会将该关键字即索引匹配到的所有网页返回；还有常见的项目中应用日志的搜索等等。对于这些非结构化的数据文本，关系型数据库搜索不是能很好的支持
 :::
 一般传统数据库，全文检索都实现的很鸡肋，因为一般也没人用数据库存文本字段。进行全文检索需要扫描整个表，如果数据量大的话即使对 SQL 的语法优化，也收效甚微。建立了索引，但是维护起来也很麻烦，对于 insert 和 update 操作都会重新构建索引
