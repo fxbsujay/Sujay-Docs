@@ -79,9 +79,10 @@ export default defineConfig({
                     ]
                 },
                 {
-                    text: '生活小工具',
+                    text: '常用知识',
                     collapsed: true,
                     items: [
+                        { text: '正则表达式', link: '/blog/regex' },
                         { text: '使用 Hexo 搭建一个博客', link: '/blog/hexo' },
                         { text: '示例', link: '/blog/text' }
                     ]
