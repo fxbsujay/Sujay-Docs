@@ -55,7 +55,6 @@ export default defineConfig({
                         { text: 'MySql 索引', link: '/blog/mysql_index' },
                         { text: 'Java JUC', link: '/blog/juc'},
                         { text: '雪花算法', link: '/blog/snow-flake' },
-                        { text: 'Map的实现', link: '/blog/mymap' },
                     ]
                 },
                 {
@@ -79,7 +78,7 @@ export default defineConfig({
                     ]
                 },
                 {
-                    text: '常用知识',
+                    text: '程序员必备',
                     collapsed: true,
                     items: [
                         { text: '正则表达式', link: '/blog/regex' },

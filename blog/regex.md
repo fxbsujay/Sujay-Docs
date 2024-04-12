@@ -1,3 +1,7 @@
+---
+outline: [2,3]
+---
+
 # 正则表达式
 
 > 正则表达式是一组由字母和符号组成的特殊文本，它可以用来从文本中找出满足你想要的格式的句子。
@@ -21,15 +25,18 @@
 正则表达式其实就是在执行搜索时的格式，它由一些字母和数字组合而成。
 例如：一个正则表达式 `the`，它表示一个规则：由字母 `t` 开始，接着是 `h` ，再接着是 `e` 。
 
-`the` => The fat cat sat on `the` mat.
+<div class="note custom-block line">
+<a>the</a> => The fat cat sat on <a>the</a> mat.
+</div>
 
 [在线练习](https://regex101.com/r/dmRygT/1)
 
 正则表达式 `123` 匹配字符串 `123` 。它逐个字符的与输入的正则表达式做比较。
 
 正则表达式是大小写敏感的，所以 `The` 不会匹配 `the` 。
-
-`The` => `The` fat cat sat on the mat.
+<div class="note custom-block line">
+<a>The</a> => <a>The</a> fat cat sat on the mat.
+</div>
 
 [在线练习](https://regex101.com/r/1paXsy/1)
 
@@ -53,17 +60,19 @@
 |   ^    | 从开始行开始匹配.                                                      |
 |   $    | 从末端开始匹配.                                                       |
 
-## 点运算符
+### 点运算符
 
 `.` 是元字符中最简单的例子。
 `.` 匹配任意单个字符，但不匹配换行符。
 例如，表达式 `.ar` 匹配一个任意字符后面跟着是 `a` 和 `r` 的字符串。
 
-`.ar` => The `car` `par`ked in the `gar`age.
+<div class="note custom-block line">
+<a>.ar</a> => The <a>car</a> <a>par</a>ked in the <a>gar</a>age.
+</div>
 
 [在线练习](https://regex101.com/r/xc9GkU/1)
 
-## 字符集
+### 字符集
 
 字符集也叫做字符类。
 方括号用来指定一个字符集。
@@ -71,154 +80,167 @@
 在方括号中的字符集不关心顺序。
 例如，表达式 `[Tt]he` 匹配 `the` 和 `The`。
 
-`[Tt]he` => `The` car parked in `the` garage.
+<div class="note custom-block line">
+<a>[Tt]he</a> => <a>The</a> car parked in <a>the</a> garage.
+</div>
 
 [在线练习](https://regex101.com/r/2ITLQ4/1)
 
 方括号的句号就表示句号。
 表达式 `ar[.]` 匹配 `ar.`字符串
 
-```text
-"ar[.]" => A garage is a good place to park a c<a href="#learn-regex"><strong>ar.</strong></a>
-```
+<div class="note custom-block line">
+<a>ar[.]</a> => A garage is a good place to park a c<a>ar.</a>
+</div>
 
 [在线练习](https://regex101.com/r/wL3xtE/1)
 
-### 2.2.1 否定字符集
+<br/>
+
+#### 否定字符集
 
 一般来说 `^` 表示一个字符串的开头，但它用在一个方括号的开头的时候，它表示这个字符集是否定的。
-例如，表达式`[^c]ar` 匹配一个后面跟着`ar`的除了`c`的任意字符。
+例如，表达式 `[^c]ar` 匹配一个后面跟着 `ar` 的除了 `c` 的任意字符。
 
-```text
-"[^c]ar" => The car <a href="#learn-regex"><strong>par</strong></a>ked in the <a href="#learn-regex"><strong>gar</strong></a>age.
-```
+<div class="note custom-block line">
+<a>[^c]ar</a> => The car <a>par</a>ked in the <a>gar</a>age.
+</div>
 
 [在线练习](https://regex101.com/r/nNNlq3/1)
 
-## 2.3 重复次数
+
+### 重复次数
 
 后面跟着元字符 `+`，`*` or `?` 的，用来指定匹配子模式的次数。
 这些元字符在不同的情况下有着不同的意思。
 
-### 2.3.1 `*` 号
+<br/>
 
-`*`号匹配 在`*`之前的字符出现`大于等于0`次。
-例如，表达式 `a*` 匹配0或更多个以a开头的字符。表达式`[a-z]*` 匹配一个行中所有以小写字母开头的字符串。
+#### \*
 
-```text
-"[a-z]*" => T<a href="#learn-regex"><strong>he</strong></a> <a href="#learn-regex"><strong>car</strong></a> <a href="#learn-regex"><strong>parked</strong></a> <a href="#learn-regex"><strong>in</strong></a> <a href="#learn-regex"><strong>the</strong></a> <a href="#learn-regex"><strong>garage</strong></a> #21.
-```
+`*` 号匹配 在 `*` 之前的字符出现大于等于0次。
+例如，表达式 `a*` 匹配0或更多个以a开头的字符。表达式 `[a-z]*` 匹配一个行中所有以小写字母开头的字符串。
+
+<div class="note custom-block line">
+<a>[a-z]*</a> => T<a>he</a> <a>car</a> <a>parked</a> <a>in</a> <a>the</a> <a>garage</a> #21.
+</div>
 
 [在线练习](https://regex101.com/r/7m8me5/1)
 
-`*`字符和`.`字符搭配可以匹配所有的字符`.*`。
-`*`和表示匹配空格的符号`\s`连起来用，如表达式`\s*cat\s*`匹配0或更多个空格开头和0或更多个空格结尾的cat字符串。
+`*` 字符和 `.` 字符搭配可以匹配所有的字符 `.*`。
+`*` 和表示匹配空格的符号 `\s` 连起来用，如表达式 `\s*cat\s*` 匹配0个或多个空格开头以及0个或多个空格结尾的cat字符串。
 
-```text
-"\s*cat\s*" => The fat<a href="#learn-regex"><strong> cat </strong></a>sat on the con<a href="#learn-regex"><strong>cat</strong></a>enation.
-```
+<div class="note custom-block line">
+<a>\s*cat\s*</a> => The fat <a>cat</a> sat on the con<a>cat</a>enation.
+</div>
 
 [在线练习](https://regex101.com/r/gGrwuz/1)
 
-### 2.3.2 `+` 号
+<br/>
 
-`+`号匹配`+`号之前的字符出现 >=1 次。
-例如表达式`c.+t` 匹配以首字母`c`开头以`t`结尾，中间跟着至少一个字符的字符串。
+####  +
 
-```text
-"c.+t" => The fat <a href="#learn-regex"><strong>cat sat on the mat</strong></a>.
-```
+`+` 号匹配 `+` 号之前的字符出现 >=1 次。
+例如表达式 `c.+t` 匹配以首字母 `c` 开头以 `t` 结尾，中间跟着至少一个字符的字符串。
+
+<div class="note custom-block line">
+<a>c.+t</a> => The fat <a>cat sat on the mat</a>.
+</div>
 
 [在线练习](https://regex101.com/r/Dzf9Aa/1)
 
-### 2.3.3 `?` 号
+<br/>
+
+#### ?
 
 在正则表达式中元字符 `?` 标记在符号前面的字符为可选，即出现 0 或 1 次。
 例如，表达式 `[T]?he` 匹配字符串 `he` 和 `The`。
 
-```text
-"[T]he" => <a href="#learn-regex"><strong>The</strong></a> car is parked in the garage.
-```
+<div class="note custom-block line">
+ <a>[T]he</a> => <a href="#?">The</a> car is parked in the garage.
+</div>
 
 [在线练习](https://regex101.com/r/cIg9zm/1)
 
-```text
-"[T]?he" => <a href="#learn-regex"><strong>The</strong></a> car is parked in t<a href="#learn-regex"><strong>he</strong></a> garage.
-```
+<div class="note custom-block line">
+<a>[T]?he</a> => <a href="#?">The</a> car is parked in t<a href="#?">he</a> garage.
+</div>
 
 [在线练习](https://regex101.com/r/kPpO2x/1)
 
-## 2.4 `{}` 号
+### 量词 {}
 
 在正则表达式中 `{}` 是一个量词，常用来限定一个或一组字符可以重复出现的次数。
 例如， 表达式 `[0-9]{2,3}` 匹配最少 2 位最多 3 位 0~9 的数字。
 
-```text
-"[0-9]{2,3}" => The number was 9.<a href="#learn-regex"><strong>999</strong></a>7 but we rounded it off to <a href="#learn-regex"><strong>10</strong></a>.0.
-```
+<div class="note custom-block line">
+<a>[0-9]{2,3}</a> => The number was 9.<a href="#量词 {}">999</a>7 but we rounded it off to <a href="#量词 {}">10</a>.0.
+</div>
 
 [在线练习](https://regex101.com/r/juM86s/1)
 
 我们可以省略第二个参数。
 例如，`[0-9]{2,}` 匹配至少两位 0~9 的数字。
 
-```text
-"[0-9]{2,}" => The number was 9.<a href="#learn-regex"><strong>9997</strong></a> but we rounded it off to <a href="#learn-regex"><strong>10</strong></a>.0.
-```
+<div class="note custom-block line">
+<a>[0-9]{2,}</a> => The number was 9.<a>9997</a> but we rounded it off to <a>10</a>.0.
+</div>
 
 [在线练习](https://regex101.com/r/Gdy4w5/1)
 
 如果逗号也省略掉则表示重复固定的次数。
 例如，`[0-9]{3}` 匹配3位数字
 
-```text
-"[0-9]{3}" => The number was 9.<a href="#learn-regex"><strong>999</strong></a>7 but we rounded it off to 10.0.
-```
+<div class="note custom-block line">
+<a>[0-9]{3}</a> => The number was 9.<a>999</a>7 but we rounded it off to 10.0.
+</div>
 
 [在线练习](https://regex101.com/r/Sivu30/1)
 
-## 2.5 `(...)` 特征标群
+### 特征标群 (...)
 
 特征标群是一组写在 `(...)` 中的子模式。`(...)` 中包含的内容将会被看成一个整体，和数学中小括号（ ）的作用相同。例如, 表达式 `(ab)*` 匹配连续出现 0 或更多个 `ab`。如果没有使用 `(...)` ，那么表达式 `ab*` 将匹配连续出现 0 或更多个 `b` 。再比如之前说的 `{}` 是用来表示前面一个字符出现指定次数。但如果在 `{}` 前加上特征标群 `(...)` 则表示整个标群内的字符重复 N 次。
 
 
 我们还可以在 `()` 中用或字符 `|` 表示或。例如，`(c|g|p)ar` 匹配 `car` 或 `gar` 或 `par`.
 
-```text
-"(c|g|p)ar" => The <a href="#learn-regex"><strong>car</strong></a> is <a href="#learn-regex"><strong>par</strong></a>ked in the <a href="#learn-regex"><strong>gar</strong></a>age.
-```
+<div class="note custom-block line">
+<a>(c|g|p)ar</a> => The <a>car</a> is <a>par</a>ked in the <a>gar</a>age.
+</div>
 
 [在线练习](https://regex101.com/r/tUxrBG/1)
 
-## 2.6 `|` 或运算符
+### 或运算符 |
 
 或运算符就表示或，用作判断条件。
 
 例如 `(T|t)he|car` 匹配 `(T|t)he` 或 `car`。
 
-```text
-"(T|t)he|car" => <a href="#learn-regex"><strong>The</strong></a> <a href="#learn-regex"><strong>car</strong></a> is parked in <a href="#learn-regex"><strong>the</strong></a> garage.
-```
+<div class="note custom-block line">
+<a>(T|t)he|car</a> => <a>The</a> <a>car</a> is parked in <a>the</a> garage.
+</div>
 
 [在线练习](https://regex101.com/r/fBXyX0/1)
 
-## 2.7 转码特殊字符
+### 转码特殊字符
 
 反斜线 `\` 在表达式中用于转码紧跟其后的字符。用于指定 `{ } [ ] / \ + * . $ ^ | ?` 这些特殊字符。如果想要匹配这些特殊字符则要在其前面加上反斜线 `\`。
 
 例如 `.` 是用来匹配除换行符外的所有字符的。如果想要匹配句子中的 `.` 则要写成 `\.` 以下这个例子 `\.?`是选择性匹配`.`
 
-```text
-"(f|c|m)at\.?" => The <a href="#learn-regex"><strong>fat</strong></a> <a href="#learn-regex"><strong>cat</strong></a> sat on the <a href="#learn-regex"><strong>mat.</strong></a>
-```
+<div class="note custom-block line">
+<a>(f|c|m)at\.?</a> => The <a>fat</a> <a>cat</a> sat on the <a>mat.</a>
+</div>
 
 [在线练习](https://regex101.com/r/DOc5Nu/1)
 
-## 2.8 锚点
+### 锚点
 
 在正则表达式中，想要匹配指定开头或结尾的字符串就要使用到锚点。`^` 指定开头，`$` 指定结尾。
 
-### 2.8.1 `^` 号
+<br/>
+
+####  ^
 
 `^` 用来检查匹配的字符串是否在所匹配字符串的开头。
 
@@ -226,57 +248,58 @@
 
 例如，`^(T|t)he` 匹配以 `The` 或 `the` 开头的字符串。
 
-```text
-"(T|t)he" => <a href="#learn-regex"><strong>The</strong></a> car is parked in <a href="#learn-regex"><strong>the</strong></a> garage.
-```
+<div class="note custom-block line">
+<a>(T|t)he</a> => <a>The</a> car is parked in <a>the</a> garage.
+</div>
 
 [在线练习](https://regex101.com/r/5ljjgB/1)
 
-```text
-"^(T|t)he" => <a href="#learn-regex"><strong>The</strong></a> car is parked in the garage.
-```
+<div class="note custom-block line">
+<a>^(T|t)he</a> => <a>The</a> car is parked in the garage.
+</div>
 
 [在线练习](https://regex101.com/r/jXrKne/1)
 
-### 2.8.2 `$` 号
+<br/>
+
+#### $
 
 同理于 `^` 号，`$` 号用来匹配字符是否是最后一个。
-
 例如，`(at\.)$` 匹配以 `at.` 结尾的字符串。
 
-```text
-"(at\.)" => The fat c<a href="#learn-regex"><strong>at.</strong></a> s<a href="#learn-regex"><strong>at.</strong></a> on the m<a href="#learn-regex"><strong>at.</strong></a>
-```
+<div class="note custom-block line">
+    <a>(at\.)</a> => The fat c<a>at.</a> s<a>at.</a> on the m<a>at.</a>
+</div>
 
 [在线练习](https://regex101.com/r/y4Au4D/1)
 
-```text
-"(at\.)$" => The fat cat. sat. on the m<a href="#learn-regex"><strong>at.</strong></a>
-```
+<div class="note custom-block line">
+<a>(at\.)$</a> => The fat cat. sat. on the m<a>at.</a>
+</div>
 
 [在线练习](https://regex101.com/r/t0AkOd/1)
 
-##  3. 简写字符集
+## 简写字符集
 
 正则表达式提供一些常用的字符集简写。如下:
 
-|简写|描述|
-|:----:|----|
-|.|除换行符外的所有字符|
-|\w|匹配所有字母数字，等同于 `[a-zA-Z0-9_]`|
-|\W|匹配所有非字母数字，即符号，等同于： `[^\w]`|
-|\d|匹配数字： `[0-9]`|
-|\D|匹配非数字： `[^\d]`|
-|\s|匹配所有空格字符，等同于： `[\t\n\f\r\p{Z}]`|
-|\S|匹配所有非空格字符： `[^\s]`|
-|\f|匹配一个换页符|
-|\n|匹配一个换行符|
-|\r|匹配一个回车符|
-|\t|匹配一个制表符|
-|\v|匹配一个垂直制表符|
-|\p|匹配 CR/LF（等同于 `\r\n`），用来匹配 DOS 行终止符|
+| 简写 | 描述                                 |
+|:--:|------------------------------------|
+| .  | 除换行符外的所有字符                         |
+| \w | 匹配所有字母数字，等同于 `[a-zA-Z0-9_]`        |
+| \W | 匹配所有非字母数字，即符号，等同于： `[^\w]`         |
+| \d | 匹配数字： `[0-9]`                      |
+| \D | 匹配非数字： `[^\d]`                     |
+| \s | 匹配所有空格字符，等同于： `[\t\n\f\r\p{Z}]`    |
+| \S | 匹配所有非空格字符： `[^\s]`                 |
+| \f | 匹配一个换页符                            |
+| \n | 匹配一个换行符                            |
+| \r | 匹配一个回车符                            |
+| \t | 匹配一个制表符                            |
+| \v | 匹配一个垂直制表符                          |
+| \p | 匹配 CR/LF（等同于 `\r\n`），用来匹配 DOS 行终止符 |
 
-## 4. 零宽度断言（前后预查）
+## 零宽度断言（前后预查）
 
 先行断言和后发断言（合称 lookaround）都属于**非捕获组**（用于匹配模式，但不包括在匹配列表中）。当我们需要一个模式的前面或后面有另一个特定的模式时，就可以使用它们。
 
@@ -291,7 +314,7 @@
 |?<=|正后发断言-存在|
 |?<!|负后发断言-排除|
 
-### 4.1 `?=...` 正先行断言
+### 正先行断言 ?=...
 
 `?=...` 正先行断言，表示第一部分表达式之后必须跟着 `?=...`定义的表达式。
 
@@ -299,94 +322,95 @@
 定义一个正先行断言要使用 `()`。在括号内部使用一个问号和等号： `(?=...)`。
 
 正先行断言的内容写在括号中的等号后面。
-例如，表达式 `(T|t)he(?=\sfat)` 匹配 `The` 和 `the`，在括号中我们又定义了正先行断言 `(?=\sfat)` ，即 `The` 和 `the` 后面紧跟着 `(空格)fat`。
+例如，表达式 `(T|t)he(?=\sfat)` 匹配 `The` 和 `the`,在括号中我们又定义了正先行断言 `(?=\sfat)` ，即 `The` 和 `the` 后面紧跟着 `(空格)fat`。
 
-```text
-"(T|t)he(?=\sfat)" => <a href="#learn-regex"><strong>The</strong></a> fat cat sat on the mat.
-```
+<div class="note custom-block line">
+<a>(T|t)he(?=\sfat)</a> => <a>The</a> fat cat sat on the mat.
+</div>
 
 [在线练习](https://regex101.com/r/IDDARt/1)
 
-### 4.2 `?!...` 负先行断言
+### 负先行断言 ?!...
 
 负先行断言 `?!` 用于筛选所有匹配结果，筛选条件为 其后不跟随着断言中定义的格式。
 `正先行断言`  定义和 `负先行断言` 一样，区别就是 `=` 替换成 `!` 也就是 `(?!...)`。
 
 表达式 `(T|t)he(?!\sfat)` 匹配 `The` 和 `the`，且其后不跟着 `(空格)fat`。
 
-```text
-"(T|t)he(?!\sfat)" => The fat cat sat on <a href="#learn-regex"><strong>the</strong></a> mat.
-```
+<div class="note custom-block line">
+<a>(T|t)he(?!\sfat)</a> => The fat cat sat on <a>the</a> mat.
+</div>
 
 [在线练习](https://regex101.com/r/V32Npg/1)
 
-### 4.3 `?<= ...` 正后发断言
+### 正后发断言 ?<= ...
 
 正后发断言 记作`(?<=...)` 用于筛选所有匹配结果，筛选条件为 其前跟随着断言中定义的格式。
 例如，表达式 `(?<=(T|t)he\s)(fat|mat)` 匹配 `fat` 和 `mat`，且其前跟着 `The` 或 `the`。
 
-```text
-"(?<=(T|t)he\s)(fat|mat)" => The <a href="#learn-regex"><strong>fat</strong></a> cat sat on the <a href="#learn-regex"><strong>mat</strong></a>.
-```
+<div class="note custom-block line">
+<a>(?<=(T|t)he\s)(fat|mat)</a> => The <a>fat</a> cat sat on the <a>mat</a>.
+</div>
 
 [在线练习](https://regex101.com/r/avH165/1)
 
-### 4.4 `?<!...` 负后发断言
+### 负后发断言 ?<!...
 
 负后发断言 记作 `(?<!...)` 用于筛选所有匹配结果，筛选条件为 其前不跟随着断言中定义的格式。
 例如，表达式 `(?<!(T|t)he\s)(cat)` 匹配 `cat`，且其前不跟着 `The` 或 `the`。
 
-```text
-"(?&lt;!(T|t)he\s)(cat)" => The cat sat on <a href="#learn-regex"><strong>cat</strong></a>.
-```
+<div class="note custom-block line">
+<a>(?&lt;!(T|t)he\s)(cat)</a> => The cat sat on <a>cat</a>.
+</div>
+
 [在线练习](https://regex101.com/r/8Efx5G/1)
 
-## 5. 标志
+## 标志
 
 标志也叫模式修正符，因为它可以用来修改表达式的搜索结果。
 这些标志可以任意的组合使用，它也是整个正则表达式的一部分。
 
-|标志|描述|
-|:----:|----|
-|i|忽略大小写。|
-|g|全局搜索。|
-|m|多行修饰符：锚点元字符 `^` `$` 工作范围在每行的起始。|
+| 标志 | 描述                              |
+|:--:|---------------------------------|
+| i  | 忽略大小写。                          |
+| g  | 全局搜索。                           |
+| m  | 多行修饰符：锚点元字符 `^` `$` 工作范围在每行的起始。 |
 
-### 5.1 忽略大小写 (Case Insensitive)
+### 忽略大小写 (Case Insensitive)
 
 修饰语 `i` 用于忽略大小写。
 例如，表达式 `/The/gi` 表示在全局搜索 `The`，在后面的 `i` 将其条件修改为忽略大小写，则变成搜索 `the` 和 `The`，`g` 表示全局搜索。
 
-```text
-"The" => <a href="#learn-regex"><strong>The</strong></a> fat cat sat on the mat.
-```
+<div class="note custom-block line">
+<a>The</a> => <a>The</a> fat cat sat on the mat.
+</div>
 
 [在线练习](https://regex101.com/r/dpQyf9/1)
 
-```text
-"/The/gi" => <a href="#learn-regex"><strong>The</strong></a> fat cat sat on <a href="#learn-regex"><strong>the</strong></a> mat.
-```
+<div class="note custom-block line">
+<a>/The/gi</a> => <a>The</a> fat cat sat on <a>the</a> mat.
+</div>
 
 [在线练习](https://regex101.com/r/ahfiuh/1)
 
-### 5.2 全局搜索 (Global search)
+### 全局搜索 (Global search)
 
 修饰符 `g` 常用于执行一个全局搜索匹配，即（不仅仅返回第一个匹配的，而是返回全部）。
 例如，表达式 `/.(at)/g` 表示搜索 任意字符（除了换行）+ `at`，并返回全部结果。
 
-```text
-"/.(at)/" => The <a href="#learn-regex"><strong>fat</strong></a> cat sat on the mat.
-```
+<div class="note custom-block line">
+<a>/.(at)/</a> => The <a>fat</a> cat sat on the mat.
+</div>
 
 [在线练习](https://regex101.com/r/jnk6gM/1)
 
-```text
-"/.(at)/g" => The <a href="#learn-regex"><strong>fat</strong></a> <a href="#learn-regex"><strong>cat</strong></a> <a href="#learn-regex"><strong>sat</strong></a> on the <a href="#learn-regex"><strong>mat</strong></a>.
-```
+<div class="note custom-block line">
+<a>/.(at)/g</a> => The <a>fat</a> <a>cat</a> <a>sat</a> on the <a>mat</a>.
+</div>
 
 [在线练习](https://regex101.com/r/dO1nef/1)
 
-### 5.3 多行修饰符 (Multiline)
+### 多行修饰符 (Multiline)
 
 多行修饰符 `m` 常用于执行一个多行匹配。
 
@@ -394,31 +418,34 @@
 
 例如，表达式 `/at(.)?$/gm` 表示小写字符 `a` 后跟小写字符 `t` ，末尾可选除换行符外任意字符。根据 `m` 修饰符，现在表达式匹配每行的结尾。
 
-```text
-"/.at(.)?$/" => The fat
+<div class="note custom-block line">
+<a>/.at(.)?$/</a> => The fat
                 cat sat
-                on the <a href="#learn-regex"><strong>mat.</strong></a>
-```
+                on the <a>mat.</a>
+</div>
 
 [在线练习](https://regex101.com/r/hoGMkP/1)
 
-```text
-"/.at(.)?$/gm" => The <a href="#learn-regex"><strong>fat</strong></a>
-                  cat <a href="#learn-regex"><strong>sat</strong></a>
-                  on the <a href="#learn-regex"><strong>mat.</strong></a>
-```
+<div class="note custom-block line">
+<a>/.at(.)?$/gm</a> => The <a>fat</a>
+                  cat <a>sat</a>
+                  on the <a>mat.</a>
+</div>
 
 [在线练习](https://regex101.com/r/E88WE2/1)
 
-### 6. 贪婪匹配与惰性匹配 (Greedy vs lazy matching)
+### 贪婪匹配与惰性匹配 (Greedy vs lazy matching)
 
 正则表达式默认采用贪婪匹配模式，在该模式下意味着会匹配尽可能长的子串。我们可以使用 `?` 将贪婪匹配模式转化为惰性匹配模式。
 
-```text
-"/(.*at)/" => <a href="#learn-regex"><strong>The fat cat sat on the mat</strong></a>. ```
+<div class="note custom-block line">
+ <a>/(.*at)/</a> => <a>The fat cat sat on the mat</a>.
+</div>
+
 [在线练习](https://regex101.com/r/AyAdgJ/1)
-```
-```text
-"/(.*?at)/" => <a href="#learn-regex"><strong>The fat</strong></a> cat sat on the mat. ```
+
+<div class="note custom-block line">
+<a>/(.*?at)/</a> => <a>The fat</a> cat sat on the mat. 
+</div>
+
 [在线练习](https://regex101.com/r/AyAdgJ/2)
-```
