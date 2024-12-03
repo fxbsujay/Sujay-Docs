@@ -9,7 +9,7 @@ export default defineConfig({
     cleanUrls: false,
     ignoreDeadLinks: true,
     lastUpdated: true,
-    head: [[ 'link', { rel: 'icon', href: '/favicon.ico' }]],
+    head: [[ 'link', { rel: 'icon', href: '/favicon.ico'}]],
     themeConfig: {
         logo: '/favicon.ico',
         siteTitle: 'Fan Xuebin',
@@ -44,26 +44,27 @@ export default defineConfig({
         sidebar: {
             '/blog': [
                 {
-                    text: 'java 基础',
+                    text: 'java',
                     collapsed: false,
                     items: [
                         { text: 'JDK 新特性', link: '/blog/jdk_support' },
                         { text: '位运算', link: '/blog/bit_operation' },
-                        { text: 'Redis', link: '/blog/redis' },
-                        { text: 'Docker', link: '/blog/docker' },
-                        { text: 'MySql', link: '/blog/mysql' },
-                        { text: 'MySql 索引', link: '/blog/mysql_index' },
-                        { text: 'Java JUC', link: '/blog/juc'},
+                        { text: 'IO', link: '/blog/io'},
+                        { text: 'JUC', link: '/blog/juc'},
+                        { text: 'Netty', link: '/blog/netty' },
                         { text: '雪花算法', link: '/blog/snow-flake' },
                     ]
                 },
                 {
-                    text: 'java 进阶',
+                    text: '中间件',
                     collapsed: true,
                     items: [
+                        { text: 'Redis', link: '/blog/redis' },
+                        { text: 'Docker', link: '/blog/docker' },
+                        { text: 'MySql', link: '/blog/mysql' },
+                        { text: 'MySql 索引', link: '/blog/mysql_index' },
                         { text: '消息队列', link: '/blog/mq' },
                         { text: 'ELK', link: '/blog/elk' },
-                        { text: 'Netty', link: '/blog/netty' },
                         { text: '分布式事务', link: '/blog/shiwu' },
                         { text: 'Gateway', link: '/blog/gateway' }
                     ]
@@ -81,17 +82,11 @@ export default defineConfig({
                     text: '程序员必备',
                     collapsed: true,
                     items: [
-                        { text: '正则表达式', link: '/blog/regex' },
-                        { text: '使用 Hexo 搭建一个博客', link: '/blog/hexo' },
-                        { text: '示例', link: '/blog/text' }
+                        { text: '正则表达式', link: '/blog/regex' }
                     ]
                 }
             ],
             '/components': [
-                /*{
-                    text: '组件总览',
-                    link: '/components/overview'
-                },*/
                 {
                     text: '基础组件',
                     collapsed: false,

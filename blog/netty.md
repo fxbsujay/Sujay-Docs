@@ -2,6 +2,9 @@
 outline: deep
 ---
 # Netty 源码分析
+> 
+
+[Netty](https://netty.io/) 是一个基于Java NIO的网络编程框架，提供了一套高效的、事件驱动的异步网络通信机制。简化了网络应用程序的开发过程，提供了可靠的、高性能的网络传输
 
 ## Netty启动流程
 ```java
