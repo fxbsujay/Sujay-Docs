@@ -74,8 +74,9 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { text: 'css选择器', link: '/blog/css' },
-                        { text: '事件循环', link: '/blog/eventLoop' },
                         { text: 'Vue3 快速上手', link: '/blog/vue' },
+                        { text: '事件循环', link: '/blog/eventLoop' },
+                        { text: '属性描述符', link: '/blog/js-property' },
                     ]
                 },
                 {
