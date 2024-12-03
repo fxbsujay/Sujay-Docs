@@ -49,8 +49,8 @@ export default defineConfig({
                     items: [
                         { text: 'JDK 新特性', link: '/blog/jdk_support' },
                         { text: '位运算', link: '/blog/bit_operation' },
-                        { text: 'IO', link: '/blog/io'},
                         { text: 'JUC', link: '/blog/juc'},
+                        { text: '网络编程', link: '/blog/nio'},
                         { text: 'Netty', link: '/blog/netty' },
                         { text: '雪花算法', link: '/blog/snow-flake' },
                     ]
@@ -83,7 +83,8 @@ export default defineConfig({
                     text: '程序员必备',
                     collapsed: true,
                     items: [
-                        { text: '正则表达式', link: '/blog/regex' }
+                        { text: '正则表达式', link: '/blog/regex' },
+                        { text: 'Ex', link: '/blog/text' }
                     ]
                 }
             ],
