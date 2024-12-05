@@ -18,7 +18,10 @@ export default defineConfig({
             label: '大纲'
         },
         lastUpdated: {
-            text: '最近更新时间'
+            text: '更新时间',
+            formatOptions: {
+                dateStyle: 'short',
+            }
         },
         editLink: {
             pattern: 'https://github.com/fxbsujay/Sujay-Docs/blob/main/docs/:path',
@@ -41,6 +44,9 @@ export default defineConfig({
             { text: '博客', link: '/blog/jdk_support' ,activeMatch:  '/blog/' },
             { text: 'UI组件库', link: '/components/button' ,activeMatch:  '/components/' },
         ],
+        search: {
+            provider: 'local'
+        },
         sidebar: {
             '/blog': [
                 {
