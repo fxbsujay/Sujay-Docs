@@ -205,3 +205,259 @@ public void test(){
 
 - 有很大的数据需要存储，他的生命周期又很长
 - 适合频繁的IO操作，比如网络并发场景
+
+
+### Channel
+
+由 `java.nio.channels` 包定义的。Channel表示IO源与目标打开的连接，Channel类似于传统的“流”，只不过Channel本身不能直接访问数据，Channel只能与Buffer进行交互
+
+NIO的通道类似于流，但有些区别如下
+
+- 通道可以同时进行读写，而流只能读或者只能写
+- 通道可以实现异步读写数据
+- 通道可以从缓冲读数据，也可以写数据到缓冲
+
+BlO中的stream是单向的，例如 `FileInputStream` 对象只能进行读取数据的操作，而NIO中的通道（Channel）是双向的，可以读操作，也可以写操作
+
+Channel在NIO中是一个接口
+```java
+public interface Channel extends Closeable()
+```
+
+常用的Channel实现类
+
+- FileChannel：用于读取、写入、映射和操作文件的通道
+- DatagramChannel：通过UDP读写网络中的数据通道
+- SocketChannel：通过TCP读写网络中额数据
+- ServerSocketChannel：可以监听新进来的TCP连接，对每一个新进来的连接都会创建一个SocketChannel
+
+**FileChannel**
+> 获取通道的一种方式是对支持通道的对象调用getChannel()方法
+
+支持通道的类如下
+- FileInputStream
+- FileOutputStream
+- RandomAccessFile
+- DatagramSocket
+- Socket
+- ServerSocket
+
+获取通道的其他方式是使用Files类的静态方法 `newByteChannel()` 获取字节通道，或通过通道的静态方法open()打开并返回指定通道
+
+::: code-group
+```java [写]
+try{
+  FileOutputStream fos = new FileOutputStream("data01_txt");
+  FileChannel channel = fos.getChannel();
+  ByteBuffer buffer = ByteBuffer.allocate(1024);
+  buffer.put("Hello World".getBytes());
+  buffer.flip();
+  channel.write(buffer);
+  channel.close();
+  System.out.println("写数据到文件中");
+} catch (Exception e) {
+  e.printStackTrace();
+}
+```
+```java [读]
+FileInputStream is = new FileInputStream("data01_txt");
+FileChannel channel = is.getChannel();
+ByteBuffer buffer = ByteBuffer.allocate(1024);
+channel.read(buffer);
+buffer.flip();
+String rs = new String(buffer.array(),0,buffer.remaining());
+System.out.println(rs);
+```
+```java [文件复制]
+File srcFile = new File("C:\\Users\\Lenovo\\Desktop\\1.jpg");
+File destFile = new File("C:\\Users\\Lenovo\\Desktop\\server\\1_copy.jpg");
+FileInputStream fis = new FileInputStream(srcFile);
+FileOutputStream fos = new FileOutputStream(destFile);
+FileChannel fisChannel = fis.getChannel();
+FileChannel fosChannel = fos.getChannel();
+ByteBuffer buffer = ByteBuffer.allocate(1024);
+while (true){
+  buffer.clear();
+  int flag = fisChannel.read(buffer);
+  if(flag == -1){
+    break;
+  }
+  buffer.flip();
+  fosChannel.write(buffer);
+}
+fisChannel.close();;
+fosChannel.close();
+System.out.println("复制完成");
+```
+:::
+
+**分散 (Scatter) 和聚集 (Getter)**
+
+分散读取（Scatter)：是指把Channel通道的数据读取入到多个缓存区中去，聚集写入（Gathering)：是指将多个Buffer中的数据聚集到Channel
+
+```java
+FileInputStream is = new FileInputStream("data01_txt");
+FileChannel isChannel = is.getChannel();
+FileOutputStream os = new FileOutputStream("data02_txt");
+FileChannel osChannel = os.getChannel();
+ByteBuffer buffer1 = ByteBuffer.allocate(4);
+ByteBuffer buffer2 = ByteBuffer.allocate(1024);
+ByteBuffer[] buffers = {buffer1,buffer2};
+isChannel.read(buffers);
+for(ByteBuffer buffer : buffers){
+  buffer.flip();
+  System.out.println(new String(buffer.array(),0,buffer.remaining()));
+}
+osChannel.write(buffers);
+isChannel.close();
+osChannel.close();
+System.out.println("文件复制~");
+```
+
+### Selector
+
+选择器（Selector）是 `SelectableChannel` 对象的多路复用器，Selector可以同时监控多个 `SelectableChannel` 的IO状况，也就是说，利用Selector可使一个单独的线程管理多个Channel，Selector是非阻塞IO的核心
+
+![](/doc/nio/img-06.jpg)
+
+java的NIO，用非阻塞的IO方式。可以用一个线程，处理多个的客户端连接，就会使用到Selector（选择器）
+
+Selector能够检测多个注册的通道上篡若有事件发生（注意：多个Channel以事件的方式可以注册到同一个 Selector)，如果有事件发生，便获取事件然后针对每个事件进行相应的处理，这样就可以只用一个单线程去管 理多个通道，也就是管理多个连接和请求
+
+只有在连接/通道真正有读写事件发生时，才会进行读写，就大大地减少了系统开销，并且不必为每个连接都 创建一个线程，不用去维护多个线程 避免了多线程之间的上下文切换导致的开销
+
+
+**创建Selector**
+
+```java
+//1.获取通道
+ServerSocketChannel ssChannel = ServerSocketChannel.open();
+
+//2.切换非阻塞模式
+ssChannel.configureBlocking(false);
+
+//3.绑定连接
+ssChannel.bind(new InetSocketAddress(9898));
+
+//4.获取选择器
+Selector selector = Selector.open();
+
+//5.将通道注册到选择器上，并且指定“监听接收事件”
+ssChannel.register(select, SelectionKey.OP_ACCEPT);
+```
+
+
+当调用register(Selector sel, mt ops)将通道注册选择器时，选择器对通道的监听事件，需要通过第二个参数
+
+ops指定可以监听的事件类型（用可使用Selection Key的四个常量表示）
+
+- 读：SelectionKey.OP_READ(1)
+- 写：SelectionKey.OP_WRITE(4)
+- 连接：SelectionKey.OP_CONNECT(8)
+- 接收：SelectionKey.OP_ACCEPT(16)
+- 若注册时不止监听一个事件，则可以使用‘位或”操作符连接
+
+```java
+int interestSet = selectionKey.OP_READ | SelectionKey.OP_WERITE
+```
+
+### 案例
+
+Selector可以实现：一个I/O线程可以并发处理N个客户端连接和读写操作，这从根本上解决了传统同步阻塞I/O一连接一线程模型，架构的性能、弹性伸缩能力和可靠性都得到了极大的提升
+
+
+::: code-group
+```java [Server]
+public class Server {
+  public static void main(String[] args) throws IOException {
+    System.out.println("---服务端启动---");
+    // 1.获取通道
+    ServerSocketChannel ssChannel = ServerSocketChannel.open();
+    // 2.切换为非阻塞模式
+    ssChannel.configureBlocking(false);
+    // 3.绑定连接的端口
+    ssChannel.bind(new InetSocketAddress(9999));
+    // 4.获取选择器
+    Selector selector = Selector.open();
+    // 5.将通道都注册到选择器上去，并且开始指定监听接收事件
+    ssChannel.register(selector, SelectionKey.OP_ACCEPT);
+    // 6.使用Selector选择器轮询已经就绪好的事件
+    while(selector.select() > 0){
+      System.out.println("开始一轮事件处理~~~");
+      // 7.获取选择器中的所有注册的通道中已经就序好的事件
+      Iterator<SelectionKey> it = selector.selectedKeys().iterator();
+      // 8.开始遍历这些准备好的事件
+      while(it.hasNext()){
+        // 提取当前这个事件
+        SelectionKey sk = it.next();
+        // 9.判断这个事件具体是什么事件
+        if(sk.isAcceptable()){
+          // 10.直接获取当前接入的客户端通道
+          SocketChannel schannel = ssChannel.accept();
+          // 11.将客户端通道也设置为非阻塞式的
+          schannel.configureBlocking(false);
+          // 12.将客户端通道也注册到选择器Selector上
+          schannel.register(selector,SelectionKey.OP_READ);
+        } else if (sk.isReadable()) {
+          // 13.获取当前选择器上的”读就绪事件“
+          SocketChannel sChannel = (SocketChannel) sk.channel();
+          // 14.开始读取数据
+          ByteBuffer buf = ByteBuffer.allocate(1024);
+          int len = 0;
+          while ((len = sChannel.read(buf)) > 0){
+            buf.flip();
+            System.out.println(new String(buf.array(),0,len));
+            // ”清除“之前的数据
+            buf.clear();
+          }
+        }
+        // 处理完毕当前事件后，需要移除掉当前事件.否则会重复处理
+        it.remove();
+      }
+    }
+  }
+}
+```
+```java [Client]
+public class Client {
+  public static void main(String[] args) throws IOException {
+    // 1.获取通道
+    SocketChannel sChannel = SocketChannel.open(new
+    InetSocketAddress("127.0.0.1",9999));
+    // 2.切换为非阻塞模式
+    sChannel.configureBlocking(false);
+    // 3.分配指定缓存区大小
+    ByteBuffer buf = ByteBuffer.allocate(1024);
+    // 4.发送数据给服务端
+    Scanner sc = new Scanner(System.in);
+    while (true){
+      System.out.println("请输入：");
+      String msg = sc.nextLine();
+      buf.put(("波仔：" + msg).getBytes());
+      buf.flip();
+      sChannel.write(buf);
+      buf.clear();
+    }
+  }
+}
+```
+:::
+
+## Asyn-Non-Blocking IO
+
+异步非阻塞，服务器实现模式为一个有效请求一个线程，客户端的I/O请求都是由OS先完成了再通知服务器应用去启动线程进行处理，AIO是异步非阻塞，基于NIO，可以称之为NIO2.0
+
+
+|         BIO          |       NIO       | AIO |
+|:--------------------:|:---------------:|:---:|
+|   Socket      |  SocketChannel   |    AsynchronousSocketChanne |
+| ServerSocket | ServerSocketChanne |  AsynchronousServerSocketChannel   |
+
+与NIO不同，当进行读写操作时，只须直接调用API的read或write方法即可，这两种方法均为异步的，对于读操作而言，当有流可读时，操作系统会将可读的流传入read方法的缓冲区，对于写操作而言，当操作系统将 write方法传递的流写入完毕时，操作系统主动通知应用程序
+
+即可以理解为，read/write方法都是异步的，完成后会主动调用回调函数。在JDK1.7中，这部分内容被称作 NIO.2，主要在 `java.nio.channel` 包下增加了下面四个异步通道
+
+- AsynchronousSocketChannel
+- AsynchronousServerSocketChannel
+- AsynchronousFileChannel
+- AsynchronousDatagramChannel

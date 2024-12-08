@@ -66,7 +66,6 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { text: 'Redis', link: '/blog/redis' },
-                        { text: 'Docker', link: '/blog/docker' },
                         { text: 'MySql', link: '/blog/mysql' },
                         { text: 'MySql 索引', link: '/blog/mysql_index' },
                         { text: '消息队列', link: '/blog/mq' },
@@ -89,6 +88,8 @@ export default defineConfig({
                     text: '程序员必备',
                     collapsed: true,
                     items: [
+                        { text: 'Linux', link: '/blog/linux' },
+                        { text: 'Docker', link: '/blog/docker' },
                         { text: '正则表达式', link: '/blog/regex' },
                         { text: 'Ex', link: '/blog/text' }
                     ]
